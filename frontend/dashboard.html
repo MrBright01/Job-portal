@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Job Portal</title>
+
+    <link rel="stylesheet" href="g.css">
+</head>
+
+<body>
+<!-- =========================
+     NAVBAR
+========================== -->
+
+<header>
+
+    <nav class="navbar">
+
+        <!-- LOGO -->
+        <div class="logo">
+            <img src="logo.png" alt="Job Portal Logo">
+            <h1>JOB PORTAL</h1>
+        </div>
+
+
+        <!-- NAVIGATION -->
+        <ul class="nav-links">
+
+            <li>
+                <a href="#home">HOME</a>
+            </li>
+
+            <li>
+                <a href="#jobs">JOBS</a>
+            </li>
+
+            <li>
+                <a href="#saved-jobs" id="savedJobsBtn">
+                    🔖 SAVED JOBS
+                </a>
+            </li>
+
+            <li>
+                <a href="#companies">COMPANIES</a>
+            </li>
+
+            <li>
+                <a href="#about">ABOUT</a>
+            </li>
+
+        </ul>
+
+
+<div class="user-menu" id="userMenu">
+
+    <button class="user-button" id="userButton">
+        👤 <span id="loggedInUserName"></span>
+    </button>
+
+    <button class="logout-button" id="logoutBtn">
+        Logout
+    </button>
+
+</div>
+
+    </nav>
+</header>
+
+    <!-- =========================
+         HERO SECTION
+    ========================== -->
+
+    <section class="hero" id="home">
+
+        <div class="hero-content">
+
+            <h2>FIND YOUR DREAM JOB</h2>
+
+            <p>
+                Explore thousands of opportunities and find the job
+                that's right for you.
+            </p>
+
+            <div class="search-box">
+
+                <input
+                    type="text"
+                    id="jobSearch"
+                    placeholder="Search jobs, skills or companies"
+                >
+
+                <button id="searchBtn">Search</button>
+
+            </div>
+
+        </div>
+
+        <div class="hero-image">
+
+            <img
+                src="images (1).jpg"
+                alt="Person searching for a job"
+            >
+
+        </div>
+
+    </section>
+    <section>
+<div class="categories">
+
+    <span data-category="Frontend">● Frontend</span>
+    <span data-category="Backend">● Backend</span>
+    <span data-category="UI/UX">● UI/UX</span>
+    <span data-category="Data Science">● Data Science</span>
+    <span data-category="DevOps">● DevOps</span>
+
+</div>
+
+    </section>
+<!-- =========================
+     FEATURED JOBS
+========================== -->
+
+<section class="featured-jobs" id="jobs">
+
+    <div class="section-title">
+
+        <div class="title-left">
+
+            <h2>Featured Jobs</h2>
+
+            <p id="jobCount">Loading jobs...</p>
+
+        </div>
+
+        <a href="#jobs" id="viewAllBtn">
+            View All →
+        </a>
+
+    </div>
+
+
+    <!-- JOB CARDS WILL APPEAR HERE -->
+
+    <div
+        class="job-container"
+        id="jobContainer"
+    ></div>
+
+
+    <!-- JOB DETAILS POPUP -->
+
+    <div
+        class="details-modal"
+        id="detailsModal"
+    >
+
+        <div
+            class="details-content"
+            id="detailsContent"
+        ></div>
+
+    </div>
+
+</section>
+
+<!-- FEATURED JOBS END -->
+
+
+    <!-- =========================
+         JOB CATEGORY TAGS
+    ========================== -->
+
+    <!-- =========================
+         POPULAR JOB CATEGORIES
+    ========================== -->
+
+    <section class="categories-section">
+
+        <div class="section-heading">
+
+            <h2>Popular Job Categories</h2>
+
+            <a href="#">View All →</a>
+
+        </div>
+
+        <div class="category-container">
+
+            <!-- DEVELOPMENT -->
+            <div class="category-card">
+
+                <div class="category-icon">💻</div>
+
+                <h3>Development</h3>
+
+                <p>120+ Jobs</p>
+
+                <span class="arrow">→</span>
+
+            </div>
+
+
+            <!-- DESIGN -->
+            <div class="category-card">
+
+                🎨
+
+                <h3>Design</h3>
+
+                <p>UI/UX, Product Design</p>
+
+                <p>200+ Jobs</p>
+
+                <span class="arrow">→</span>
+
+            </div>
+
+
+            <!-- DATA -->
+            <div class="category-card">
+
+                📊
+
+                <h3>Data & AI</h3>
+
+                <p>Data Science, ML, Analysis</p>
+
+                <p>150+ Jobs</p>
+
+                <span class="arrow">→</span>
+
+            </div>
+
+
+            <!-- CLOUD -->
+            <div class="category-card cloud">
+
+                ☁️
+
+                <h3>Cloud & DevOps</h3>
+
+                <p>AWS, Azure, DevOps</p>
+
+                <p>100+ Jobs</p>
+
+                <span class="arrow">→</span>
+
+            </div>
+
+
+            <!-- BUSINESS -->
+            <div class="category-card business">
+
+                💼
+
+                <h3>Business</h3>
+
+                <p>Marketing, HR, Sales</p>
+
+                <p>50+ Jobs</p>
+
+                <span class="arrow">→</span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- POPULAR JOB SECTION ENDING -->
+
+
+    <!-- =========================
+         COMPANIES SECTION
+    ========================== -->
+
+    <section class="recruiters" id="companies">
+
+        <div class="section-title">
+
+            <h2>Top Recruiters</h2>
+
+            <a href="#">View All →</a>
+
+        </div>
+
+        <div class="recruiter-container">
+<div class="recruiter-card">
+    <div class="recruiter-logo google">G</div>
+
+    <h3>Google</h3>
+    <p>120+ Open Jobs</p>
+
+    <button class="company-jobs-btn" data-company="Google">
+        View Jobs →
+    </button>
+</div>
+
+            <div class="recruiter-card">
+
+                <div class="recruiter-logo microsoft">M</div>
+
+                <h3>Microsoft</h3>
+
+                <p>85+ Open Jobs</p>
+
+                <button class="company-jobs-btn" data-company="Microsoft">
+    View Jobs →
+</button>
+
+            </div>
+
+
+            <div class="recruiter-card">
+
+                <div class="recruiter-logo tata">T</div>
+
+                <h3>TATA</h3>
+
+                <p>150+ Open Jobs</p>
+
+                <button class="company-jobs-btn" data-company="TATA">
+    View Jobs →
+</button>
+
+            </div>
+
+
+            <div class="recruiter-card">
+
+                <div class="recruiter-logo adobe">A</div>
+
+                <h3>Adobe</h3>
+
+                <p>60+ Open Jobs</p>
+
+                <button class="company-jobs-btn" data-company="Adobe">
+    View Jobs →
+</button>
+
+            </div>
+
+
+            <div class="recruiter-card">
+
+                <div class="recruiter-logo amazon">a</div>
+
+                <h3>Amazon</h3>
+
+                <p>200+ Open Jobs</p>
+
+                <button class="company-jobs-btn" data-company="Amazon">
+    View Jobs →
+</button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- COMPANY SECTION ENDING -->
+
+
+    <!-- =========================
+         APPLY POPUP
+    ========================== -->
+
+    <div class="apply-modal" id="applyModal">
+
+        <div class="apply-box">
+
+            <button class="close-modal" id="closeModal">×</button>
+
+            <h2>Apply for Job</h2>
+
+            <p id="selectedJob">Frontend Developer</p>
+
+            <form id="applyForm">
+
+                <input
+                    type="text"
+                    placeholder="Your Name"
+                    required
+                >
+
+                <input
+                    type="email"
+                    placeholder="Your Email"
+                    required
+                >
+
+                <input
+                    type="tel"
+                    placeholder="Phone Number"
+                    required
+                >
+
+                <textarea
+                    placeholder="Tell us about yourself"
+                    rows="4"
+                    required
+                ></textarea>
+
+                <button type="submit">
+                    Submit Application
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         ABOUT SECTION
+    ========================== -->
+
+    <section class="about-section" id="about">
+
+        <div class="about-content">
+
+            <span class="about-label">ABOUT US</span>
+
+            <h2>Connecting Talent With Opportunity</h2>
+
+            <p>
+                Job Portal helps job seekers discover meaningful
+                opportunities and connect with companies looking for
+                talented people.
+            </p>
+
+            <div class="about-stats">
+
+                <div>
+                    <strong>1000+</strong>
+                    <span>Jobs</span>
+                </div>
+
+                <div>
+                    <strong>100+</strong>
+                    <span>Companies</span>
+                </div>
+
+                <div>
+                    <strong>5000+</strong>
+                    <span>Job Seekers</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ABOUT SECTION ENDING -->
+
+
+    <!-- =========================
+         FOOTER
+    ========================== -->
+
+    <footer class="footer">
+
+        <div class="footer-container">
+
+            <div class="footer-brand">
+
+                <div class="footer-logo">
+
+                    <img
+                        src="logo.png"
+                        alt="Job Portal Logo"
+                    >
+
+                    <h2>JOB PORTAL</h2>
+
+                </div>
+
+                <p>
+                    Find your dream job and build your future
+                    with the right opportunity.
+                </p>
+
+            </div>
+
+
+            <div class="footer-links">
+
+                <h3>For Job Seekers</h3>
+
+                <a href="#">Browse Jobs</a>
+                <a href="#">Companies</a>
+                <a href="#">Career Advice</a>
+
+            </div>
+
+
+            <div class="footer-links">
+
+                <h3>For Employers</h3>
+
+                <a href="#">Post a Job</a>
+                <a href="#">Find Candidates</a>
+                <a href="#">Recruiter Login</a>
+
+            </div>
+
+
+            <div class="footer-links">
+
+                <h3>Company</h3>
+
+                <a href="#">About Us</a>
+                <a href="#">Contact</a>
+                <a href="#">Privacy Policy</a>
+
+            </div>
+
+        </div>
+
+
+        <div class="footer-bottom">
+
+            <p>
+                © 2026 Job Portal. All rights reserved.
+            </p>
+
+            <div>
+
+                <a href="#">LinkedIn</a>
+                <a href="#">Instagram</a>
+                <a href="#">Facebook</a>
+
+            </div>
+
+        </div>
+
+    </footer>
+
+    <!-- FOOTER ENDING -->
+
+    <script src="dashboard.js"></script>
+
+
+
+<script>
+
+    // ==============================
+    // CHECK LOGIN
+    // ==============================
+
+    const loggedInUser =
+        JSON.parse(localStorage.getItem("loggedInUser"));
+
+    if (!loggedInUser) {
+
+        window.location.href = "home.html";
+
+    }
+
+
+    // ==============================
+    // SHOW USER NAME
+    // ==============================
+
+    const loggedInUserName =
+        document.getElementById("loggedInUserName");
+
+    if (loggedInUser && loggedInUserName) {
+
+        loggedInUserName.textContent =
+            loggedInUser.name;
+
+    }
+
+
+    // ==============================
+    // LOGOUT
+    // ==============================
+
+    const logoutBtn =
+        document.getElementById("logoutBtn");
+
+    if (logoutBtn) {
+
+        logoutBtn.addEventListener("click", function() {
+
+            localStorage.removeItem("loggedInUser");
+
+            window.location.href = "home.html";
+
+        });
+
+    }
+
+</script>
+</body>
+
+</html>

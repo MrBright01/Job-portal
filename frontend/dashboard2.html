@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Employer Dashboard</title>
+
+    <link rel="stylesheet" href="dashboard2.css">
+    <link rel ="stylesheet" href="g.css">
+</head>
+
+<body>
+
+<!-- =========================
+     EMPLOYER NAVBAR
+========================== -->
+
+<header>
+
+    <nav class="navbar">
+
+        <!-- LOGO -->
+        <div class="logo">
+
+            <img
+                src="logo.png"
+                alt="Job Portal Logo"
+            >
+
+            <h1>JOB PORTAL</h1>
+
+        </div>
+
+
+        <!-- EMPLOYER NAVIGATION -->
+
+        <ul class="nav-links">
+
+            <!-- DASHBOARD -->
+
+            <li>
+                <a href="#dashboard">
+                    🏠 DASHBOARD
+                </a>
+            </li>
+
+
+            <!-- POST JOB -->
+
+            <li>
+                <a href="#post-job" id="postJobNavBtn">
+                    ➕ POST JOB
+                </a>
+            </li>
+
+
+            <!-- MY JOBS -->
+
+            <li>
+                <a href="#my-jobs" id="myJobsNavBtn">
+                    💼 MY JOBS
+                </a>
+            </li>
+
+
+            <!-- APPLICANTS -->
+
+            <li>
+                <a href="#applicants" id="applicantsNavBtn">
+                    👥 APPLICANTS
+                </a>
+            </li>
+
+
+            <!-- ABOUT -->
+
+            <li>
+                <a href="#about">
+                    ℹ️ ABOUT
+                </a>
+            </li>
+
+        </ul>
+
+
+        <!-- USER MENU -->
+
+        <div
+            class="user-menu"
+            id="userMenu"
+        >
+
+            <button
+                class="user-button"
+                id="userButton"
+            >
+
+                👤
+                <span id="loggedInUserName">
+                </span>
+
+            </button>
+
+
+            <button
+                class="logout-button"
+                id="logoutBtn"
+            >
+                Logout
+            </button>
+
+        </div>
+
+    </nav>
+
+</header>
+
+
+    <main class="dashboard-container">
+
+        <!-- WELCOME -->
+
+        <section class="welcome-section">
+
+            <div>
+                <h1>
+                    Welcome, <span id="welcomeName">Employer</span> 👋
+                </h1>
+
+                <p>
+                    Manage your job postings and find the right candidates.
+                </p>
+            </div>
+
+            <button id="showPostJobBtn" class="primary-btn">
+                + Post a Job
+            </button>
+
+        </section>
+
+
+        <!-- STATISTICS -->
+
+        <section class="stats-container">
+
+            <div class="stat-card">
+                <h3>Total Jobs</h3>
+                <p id="totalJobs">0</p>
+            </div>
+
+            <div class="stat-card">
+                <h3>Active Jobs</h3>
+                <p id="activeJobs">0</p>
+            </div>
+
+            <div class="stat-card">
+                <h3>Applications</h3>
+                <p id="totalApplications">0</p>
+            </div>
+
+        </section>
+
+
+        <!-- POST JOB -->
+
+        <section
+            class="post-job-section"
+            id="postJobSection"
+        >
+
+            <h2>Post a New Job</h2>
+
+            <form id="postJobForm">
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label>
+                            Job Title
+                        </label>
+
+                        <input
+                            type="text"
+                            id="jobTitle"
+                            placeholder="Frontend Developer"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Company
+                        </label>
+
+                        <input
+                            type="text"
+                            id="company"
+                            placeholder="Company Name"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label>
+                            Category
+                        </label>
+
+                        <select id="category" required>
+
+                            <option value="">
+                                Select Category
+                            </option>
+
+                            <option value="Frontend">
+                                Frontend
+                            </option>
+
+                            <option value="Backend">
+                                Backend
+                            </option>
+
+                            <option value="Full Stack">
+                                Full Stack
+                            </option>
+
+                            <option value="Data Science">
+                                Data Science
+                            </option>
+
+                            <option value="AI/ML">
+                                AI / ML
+                            </option>
+
+                            <option value="Other">
+                                Other
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Job Type
+                        </label>
+
+                        <select id="jobType" required>
+
+                            <option value="">
+                                Select Type
+                            </option>
+
+                            <option value="Full Time">
+                                Full Time
+                            </option>
+
+                            <option value="Part Time">
+                                Part Time
+                            </option>
+
+                            <option value="Internship">
+                                Internship
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label>
+                            Location
+                        </label>
+
+                        <input
+                            type="text"
+                            id="location"
+                            placeholder="Indore, India"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Salary
+                        </label>
+
+                        <input
+                            type="text"
+                            id="salary"
+                            placeholder="₹5–8 LPA"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Skills
+                    </label>
+
+                    <input
+                        type="text"
+                        id="skills"
+                        placeholder="HTML, CSS, JavaScript, React"
+                    >
+
+                    <small>
+                        Separate skills using commas.
+                    </small>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Job Description
+                    </label>
+
+                    <textarea
+                        id="description"
+                        rows="6"
+                        placeholder="Describe the job..."
+                        required
+                    ></textarea>
+
+                </div>
+
+
+                <div class="form-actions">
+
+                    <button
+                        type="submit"
+                        class="primary-btn"
+                    >
+                        Post Job
+                    </button>
+
+                    <button
+                        type="button"
+                        id="cancelPostJob"
+                        class="secondary-btn"
+                    >
+                        Cancel
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+
+        <!-- POSTED JOBS -->
+
+        <section class="jobs-section">
+
+            <div class="section-header">
+
+                <div>
+
+                    <h2>
+                        Your Job Postings
+                    </h2>
+
+                    <p>
+                        Manage the jobs you have posted.
+                    </p>
+
+                </div>
+
+                <button
+                    id="refreshJobs"
+                    class="secondary-btn"
+                >
+                    Refresh
+                </button>
+
+            </div>
+
+
+            <div
+                id="employerJobsContainer"
+                class="jobs-container"
+            >
+
+                <p class="loading">
+                    Loading jobs...
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script src="dashboard2.js"></script>
+
+
+    <!-- =========================
+         ABOUT SECTION
+    ========================== -->
+
+    <section class="about-section" id="about">
+
+        <div class="about-content">
+
+            <span class="about-label">ABOUT US</span>
+
+            <h2>Connecting Talent With Opportunity</h2>
+
+            <p>
+                Job Portal helps job seekers discover meaningful
+                opportunities and connect with companies looking for
+                talented people.
+            </p>
+
+            <div class="about-stats">
+
+                <div>
+                    <strong>1000+</strong>
+                    <span>Jobs</span>
+                </div>
+
+                <div>
+                    <strong>100+</strong>
+                    <span>Companies</span>
+                </div>
+
+                <div>
+                    <strong>5000+</strong>
+                    <span>Job Seekers</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ABOUT SECTION ENDING -->
+<!-- =========================
+     EMPLOYER FOOTER
+========================== -->
+
+<footer class="footer">
+
+    <div class="footer-container">
+
+
+        <!-- =========================
+             BRAND
+        ========================== -->
+
+        <div class="footer-brand">
+
+            <div class="footer-logo">
+
+                <img
+                    src="logo.png"
+                    alt="Job Portal Logo"
+                >
+
+                <h2>JOB PORTAL</h2>
+
+            </div>
+
+            <p>
+                Connect with talented professionals and
+                find the right candidates for your company.
+            </p>
+
+        </div>
+
+
+        <!-- =========================
+             EMPLOYER TOOLS
+        ========================== -->
+
+        <div class="footer-links">
+
+            <h3>Employer Tools</h3>
+
+            <a href="#post-job">
+                Post a Job
+            </a>
+
+            <a href="#my-jobs">
+                My Jobs
+            </a>
+
+            <a href="#applicants">
+                Applicants
+            </a>
+
+        </div>
+
+
+        <!-- =========================
+             HIRING RESOURCES
+        ========================== -->
+
+        <div class="footer-links">
+
+            <h3>Hiring Resources</h3>
+
+            <a href="#">
+                Find Candidates
+            </a>
+
+            <a href="#">
+                Hiring Tips
+            </a>
+
+            <a href="#">
+                Recruitment Guide
+            </a>
+
+        </div>
+
+
+        <!-- =========================
+             COMPANY
+        ========================== -->
+
+        <div class="footer-links">
+
+            <h3>Company</h3>
+
+            <a href="#about">
+                About Us
+            </a>
+
+            <a href="#">
+                Contact
+            </a>
+
+            <a href="#">
+                Privacy Policy
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         FOOTER BOTTOM
+    ========================== -->
+
+    <div class="footer-bottom">
+
+        <p>
+            © 2026 Job Portal. All rights reserved.
+        </p>
+
+
+        <div>
+
+            <a href="#">
+                Instagram
+            </a>
+
+            <a href="#">
+                Facebook
+            </a>
+
+            <a href="#">
+                LinkedIn
+            </a>
+
+        </div>
+
+    </div>
+
+</footer>
+
+<!-- FOOTER ENDING -->
+
+
+<script>
+
+    // ==============================
+    // CHECK LOGIN
+    // ==============================
+
+    const loggedInUser =
+        JSON.parse(localStorage.getItem("loggedInUser"));
+
+    if (!loggedInUser) {
+
+        window.location.href = "home.html";
+
+    }
+
+
+    // ==============================
+    // SHOW USER NAME
+    // ==============================
+
+    const loggedInUserName =
+        document.getElementById("loggedInUserName");
+
+    if (loggedInUser && loggedInUserName) {
+
+        loggedInUserName.textContent =
+            loggedInUser.name;
+
+    }
+
+
+    // ==============================
+    // LOGOUT
+    // ==============================
+
+    const logoutBtn =
+        document.getElementById("logoutBtn");
+
+    if (logoutBtn) {
+
+        logoutBtn.addEventListener("click", function() {
+
+            localStorage.removeItem("loggedInUser");
+
+            window.location.href = "home.html";
+
+        });
+
+    }
+
+</script>
+
+<script src="script.js"></script>
+
+</body>
+
+</html>
