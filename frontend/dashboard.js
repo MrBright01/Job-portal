@@ -10,7 +10,7 @@ const loggedInUser =
     JSON.parse(localStorage.getItem("loggedInUser"));
 
 if (!loggedInUser) {
-    window.location.href = "home.html";
+    window.location.href = "index.html";
 }
 
 
@@ -57,7 +57,7 @@ if (logoutBtn) {
             );
 
             window.location.href =
-                "home.html";
+                "index.html";
 
         }
     );

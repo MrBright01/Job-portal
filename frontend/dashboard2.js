@@ -17,7 +17,7 @@ const loggedInUser =
 
 if (!loggedInUser) {
 
-    window.location.href = "home.html";
+    window.location.href = "index.html";
 
 }
 
@@ -112,7 +112,7 @@ logoutBtn.addEventListener(
         );
 
         window.location.href =
-            "home.html";
+            "index.html";
 
     }
 );
