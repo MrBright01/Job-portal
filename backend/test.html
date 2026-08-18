@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Signup</title>
+</head>
+
+<body>
+
+    <h2>Test Signup</h2>
+
+    <input id="name" placeholder="Name"><br><br>
+
+    <input id="email" placeholder="Email"><br><br>
+
+    <input id="password" type="password" placeholder="Password"><br><br>
+
+    <select id="role">
+        <option value="employee">Employee</option>
+        <option value="employer">Employer</option>
+    </select>
+
+    <br><br>
+
+    <button onclick="signup()">Signup</button>
+
+    <p id="result"></p>
+
+    <script>
+        async function signup() {
+
+            const name = document.getElementById("name").value;
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+            const role = document.getElementById("role").value;
+
+            try {
+
+                const response = await fetch(
+                    "http://localhost:5000/api/auth/signup",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            name,
+                            email,
+                            password,
+                            role
+                        })
+                    }
+                );
+
+                const data = await response.json();
+
+                document.getElementById("result").textContent =
+                    JSON.stringify(data);
+
+            } catch (error) {
+
+                document.getElementById("result").textContent =
+                    "Error: " + error.message;
+
+            }
+        }
+    </script>
+
+</body>
+</html>
