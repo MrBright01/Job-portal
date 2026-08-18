@@ -277,7 +277,8 @@ function isJobSaved(jobTitle) {
 
     return savedJobs.includes(jobTitle);
 
-}// ==============================
+}
+// ==============================
 // DISPLAY JOB CARDS
 // ==============================
 
@@ -285,7 +286,7 @@ async function loadJobs() {
 
     try {
 
-        const response = await fetch("http://localhost:5000/api/jobs");
+        const response = await fetch("https://job-portal-1-5gno.onrender.com/api/jobs");
 
         if (!response.ok) {
             throw new Error("Failed to fetch jobs");
@@ -1301,8 +1302,7 @@ loginForm.addEventListener("submit", async function (event) {
 
     try {
 
-        const response = await fetch(
-            "http://localhost:5000/api/auth/login",
+        const response = await fetch("https://job-portal-1-5gno.onrender.com/api/auth/login",
             {
                 method: "POST",
 
@@ -1570,7 +1570,7 @@ signupForm.addEventListener(
         try {
 
             const response = await fetch(
-                "http://localhost:5000/api/auth/signup",
+                "https://job-portal-1-5gno.onrender.com/api/auth/signup",
                 {
                     method: "POST",
 

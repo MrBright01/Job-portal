@@ -116,7 +116,7 @@ npm run dev
 
 The backend will run on:
 
-http://localhost:5000
+"https://job-portal-1-5gno.onrender.com/api/jobs"
 
 🔑 User Roles
 

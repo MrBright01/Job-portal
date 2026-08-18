@@ -166,7 +166,7 @@ async function loadEmployerJobs() {
 
         const response =
             await fetch(
-                "http://localhost:5000/api/jobs"
+                fetch("https://job-portal-1-5gno.onrender.com/api/jobs")
             );
 
 
@@ -535,7 +535,7 @@ postJobForm.addEventListener(
 
             const response =
                 await fetch(
-                    "http://localhost:5000/api/jobs",
+                    "https://job-portal-1-5gno.onrender.com/api/jobs",
                     {
                         method: "POST",
 
@@ -648,7 +648,7 @@ async function deleteJob(jobId) {
 
         const response =
             await fetch(
-                `http://localhost:5000/api/jobs/${jobId}`,
+                `https://job-portal-1-5gno.onrender.com/api/jobs/${jobId}`,
                 {
                     method: "DELETE"
                 }
