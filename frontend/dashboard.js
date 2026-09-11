@@ -881,6 +881,7 @@ async function loadProfile() {
         }
 
         const user = data.user;
+        updateProfileCompletion(user);
 
 
         if (profileName) {
@@ -926,8 +927,8 @@ async function loadProfile() {
             error
         );
 
-    }
-}
+    }}
+    
 
 
 // SAVE PROFILE
@@ -1058,4 +1059,82 @@ if (profileForm) {
         }
     );
 
+}// ==============================
+// UPDATE PROFILE COMPLETION
+// ==============================
+
+function updateProfileCompletion(user) {
+
+    console.log("PROFILE DATA:", user);
+
+    const fields = [
+        user?.name,
+        user?.email,
+        user?.phone,
+        user?.location,
+        user?.education,
+        user?.experience,
+        user?.skills?.length > 0 ? "skills" : "",
+        user?.about
+    ];
+
+    const completed = fields.filter(field => {
+
+        if (Array.isArray(field)) {
+            return field.length > 0;
+        }
+
+        return field !== undefined &&
+               field !== null &&
+               String(field).trim() !== "";
+
+    }).length;
+
+    const percentage =
+        Math.round((completed / 8) * 100);
+
+    console.log("PROFILE COMPLETION:", percentage + "%");
+
+
+    const percentElement =
+        document.getElementById(
+            "profileCompletionPercent"
+        );
+
+    const progressElement =
+        document.getElementById(
+            "profileProgressBar"
+        );
+
+    console.log(
+        "Percentage element:",
+        percentElement
+    );
+
+    console.log(
+        "Progress element:",
+        progressElement
+    );
+
+
+    if (percentElement) {
+        percentElement.textContent =
+            percentage + "%";
+    }
+
+    if (progressElement) {
+        progressElement.style.width =
+            percentage + "%";
+    }
 }
+if (profileForm) {
+
+    profileForm.addEventListener("submit", async function (event) {
+        // ...
+    });
+
+}
+
+
+// Load profile when dashboard opens
+loadProfile();

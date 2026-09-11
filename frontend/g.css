@@ -4329,3 +4329,51 @@ header {
 
     background: #0d5be0;
 }
+/* ==============================
+   PROFILE COMPLETION
+   ============================== */
+
+.profile-completion {
+    padding: 8px 12px 13px;
+    margin-bottom: 5px;
+}
+
+.profile-completion-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 7px;
+}
+
+.profile-completion-top span {
+    font-size: 11px;
+    color: #7b8494;
+}
+
+.profile-completion-top strong {
+    font-size: 11px;
+    color: #1769ff;
+}
+
+.profile-progress {
+    width: 100%;
+    height: 6px;
+
+    background: #e9edf3;
+
+    border-radius: 10px;
+
+    overflow: hidden;
+}
+
+.profile-progress-bar {
+    width: 0%;
+    height: 100%;
+
+    background: #1769ff;
+
+    border-radius: 10px;
+
+    transition: width 0.4s ease;
+}
