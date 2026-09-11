@@ -25,17 +25,99 @@ if (
     window.location.href = "dashboard2.html";
 }
 
+// ==============================
+// USER MENU
+// ==============================
 
-// ==============================
-// USER NAME
-// ==============================
+const userButton =
+    document.getElementById("userButton");
+
+const userDropdown =
+    document.getElementById("userDropdown");
 
 const loggedInUserName =
     document.getElementById("loggedInUserName");
 
-if (loggedInUserName && loggedInUser) {
-    loggedInUserName.textContent =
-        loggedInUser.name;
+const dropdownUserName =
+    document.getElementById("dropdownUserName");
+
+const dropdownUserRole =
+    document.getElementById("dropdownUserRole");
+
+
+// ==============================
+// SHOW USER INFORMATION
+// ==============================
+
+if (loggedInUser) {
+
+    if (loggedInUserName) {
+
+        loggedInUserName.textContent =
+            loggedInUser.name;
+
+    }
+
+    if (dropdownUserName) {
+
+        dropdownUserName.textContent =
+            loggedInUser.name;
+
+    }
+
+    if (dropdownUserRole) {
+
+        dropdownUserRole.textContent =
+            loggedInUser.role === "employer"
+                ? "Employer"
+                : "Job Seeker";
+
+    }
+
+}
+
+
+// ==============================
+// OPEN / CLOSE USER DROPDOWN
+// ==============================
+
+if (userButton && userDropdown) {
+
+    userButton.addEventListener(
+        "click",
+        function (event) {
+
+            event.stopPropagation();
+
+            userDropdown.classList.toggle(
+                "show"
+            );
+
+        }
+    );
+
+
+    // Close when clicking outside
+
+    document.addEventListener(
+        "click",
+        function (event) {
+
+            if (
+                !event.target.closest(
+                    "#userMenu"
+                )
+            ) {
+
+                userDropdown.classList.remove(
+                    "show"
+                );
+
+            }
+
+        }
+    );
+
 }
 
 
@@ -43,12 +125,14 @@ if (loggedInUserName && loggedInUser) {
 // LOGOUT
 // ==============================
 
-const logoutBtn =
-    document.getElementById("logoutBtn");
+const dropdownLogoutBtn =
+    document.getElementById(
+        "dropdownLogoutBtn"
+    );
 
-if (logoutBtn) {
+if (dropdownLogoutBtn) {
 
-    logoutBtn.addEventListener(
+    dropdownLogoutBtn.addEventListener(
         "click",
         function () {
 
@@ -654,3 +738,324 @@ if (savedJobsBtn) {
 // ==============================
 
 loadJobs();
+// ==============================
+// PROFILE MODAL
+// ==============================
+
+const profileModal =
+    document.getElementById("profileModal");
+
+const openProfileBtn =
+    document.getElementById("openProfileBtn");
+
+const closeProfileBtn =
+    document.getElementById("closeProfileBtn");
+
+const cancelProfileBtn =
+    document.getElementById("cancelProfileBtn");
+
+
+// OPEN PROFILE
+
+if (openProfileBtn && profileModal) {
+
+    openProfileBtn.addEventListener("click", function () {
+
+        profileModal.classList.add("show");
+
+        // Close user dropdown
+        if (userDropdown) {
+            userDropdown.classList.remove("show");
+        }
+
+    });
+
+}
+
+
+// CLOSE PROFILE
+
+function closeProfileModal() {
+
+    if (profileModal) {
+        profileModal.classList.remove("show");
+    }
+
+}
+
+
+if (closeProfileBtn) {
+
+    closeProfileBtn.addEventListener(
+        "click",
+        closeProfileModal
+    );
+
+}
+
+
+if (cancelProfileBtn) {
+
+    cancelProfileBtn.addEventListener(
+        "click",
+        closeProfileModal
+    );
+
+}
+
+
+// CLOSE WHEN CLICKING OUTSIDE
+
+if (profileModal) {
+
+    profileModal.addEventListener("click", function (event) {
+
+        if (event.target === profileModal) {
+
+            closeProfileModal();
+
+        }
+
+    });
+
+
+}
+// ==============================
+// LOAD & SAVE PROFILE
+// ==============================
+
+const profileForm =
+    document.getElementById("profileForm");
+
+const profileName =
+    document.getElementById("profileName");
+
+const profileEmail =
+    document.getElementById("profileEmail");
+
+const profilePhone =
+    document.getElementById("profilePhone");
+
+const profileLocation =
+    document.getElementById("profileLocation");
+
+const profileEducation =
+    document.getElementById("profileEducation");
+
+const profileExperience =
+    document.getElementById("profileExperience");
+
+const profileSkills =
+    document.getElementById("profileSkills");
+
+const profileAbout =
+    document.getElementById("profileAbout");
+
+
+// BACKEND URL
+const API_BASE =
+    "https://job-portal-1-5gno.onrender.com/api";
+
+
+// LOAD PROFILE
+console.log("Logged in user:", loggedInUser);
+console.log("User ID:", loggedInUser?.id);
+
+async function loadProfile() {
+
+    if (!loggedInUser || !loggedInUser.id) {
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            `${API_BASE}/auth/profile/${loggedInUser.id}`
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            console.error(data.message);
+            return;
+        }
+
+        const user = data.user;
+
+
+        if (profileName) {
+            profileName.value = user.name || "";
+        }
+
+        if (profileEmail) {
+            profileEmail.value = user.email || "";
+        }
+
+        if (profilePhone) {
+            profilePhone.value = user.phone || "";
+        }
+
+        if (profileLocation) {
+            profileLocation.value = user.location || "";
+        }
+
+        if (profileEducation) {
+            profileEducation.value = user.education || "";
+        }
+
+        if (profileExperience) {
+            profileExperience.value = user.experience || "";
+        }
+
+        if (profileSkills) {
+            profileSkills.value =
+                Array.isArray(user.skills)
+                    ? user.skills.join(", ")
+                    : "";
+        }
+
+        if (profileAbout) {
+            profileAbout.value = user.about || "";
+        }
+
+
+    } catch (error) {
+
+        console.error(
+            "Error loading profile:",
+            error
+        );
+
+    }
+}
+
+
+// SAVE PROFILE
+
+if (profileForm) {
+
+    profileForm.addEventListener(
+        "submit",
+        async function (event) {
+
+            event.preventDefault();
+
+
+            if (!loggedInUser || !loggedInUser.id) {
+
+                alert("Please login again.");
+
+                return;
+            }
+
+
+            const skillsArray =
+                profileSkills.value
+                    .split(",")
+                    .map(skill => skill.trim())
+                    .filter(skill => skill !== "");
+
+
+            const profileData = {
+
+                name: profileName.value.trim(),
+
+                phone: profilePhone.value.trim(),
+
+                location: profileLocation.value.trim(),
+
+                education: profileEducation.value.trim(),
+
+                skills: skillsArray,
+
+                experience: profileExperience.value.trim(),
+
+                about: profileAbout.value.trim()
+
+            };
+
+
+            try {
+
+                const response = await fetch(
+                    `${API_BASE}/auth/profile/${loggedInUser.id}`,
+                    {
+                        method: "PUT",
+
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+
+                        body: JSON.stringify(profileData)
+                    }
+                );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    alert(
+                        data.message ||
+                        "Failed to update profile."
+                    );
+
+                    return;
+                }
+
+
+                // Update local user information
+
+                loggedInUser.name =
+                    data.user.name;
+
+                localStorage.setItem(
+                    "loggedInUser",
+                    JSON.stringify(loggedInUser)
+                );
+
+
+                // Update navbar name
+
+                if (loggedInUserName) {
+
+                    loggedInUserName.textContent =
+                        data.user.name;
+
+                }
+
+                if (dropdownUserName) {
+
+                    dropdownUserName.textContent =
+                        data.user.name;
+
+                }
+
+
+                alert(
+                    "Profile updated successfully!"
+                );
+
+
+                closeProfileModal();
+
+
+            } catch (error) {
+
+                console.error(
+                    "Profile update error:",
+                    error
+                );
+
+                alert(
+                    "Unable to connect to server."
+                );
+
+            }
+
+        }
+    );
+
+}

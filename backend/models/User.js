@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
     {
+        // Basic account information
         name: {
             type: String,
             required: true,
@@ -25,6 +26,50 @@ const userSchema = new mongoose.Schema(
             type: String,
             enum: ["employee", "employer"],
             required: true
+        },
+
+        // =========================
+        // Job Seeker Profile
+        // =========================
+
+        phone: {
+            type: String,
+            trim: true,
+            default: ""
+        },
+
+        location: {
+            type: String,
+            trim: true,
+            default: ""
+        },
+
+        education: {
+            type: String,
+            trim: true,
+            default: ""
+        },
+
+        skills: {
+            type: [String],
+            default: []
+        },
+
+        experience: {
+            type: String,
+            trim: true,
+            default: ""
+        },
+
+        about: {
+            type: String,
+            trim: true,
+            default: ""
+        },
+
+        profilePhoto: {
+            type: String,
+            default: ""
         }
     },
     {

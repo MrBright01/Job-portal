@@ -58,11 +58,57 @@
 
     <button class="user-button" id="userButton">
         👤 <span id="loggedInUserName"></span>
+        <span class="user-arrow">▼</span>
     </button>
 
-    <button class="logout-button" id="logoutBtn">
-        Logout
-    </button>
+    <div class="user-dropdown" id="userDropdown">
+
+        <div class="user-dropdown-header">
+
+            <div class="user-avatar">
+            </div>
+
+            <div>
+                <strong id="dropdownUserName">
+                   👤 User
+                </strong>
+
+                <span id="dropdownUserRole">
+                    Job Seeker
+                </span>
+            </div>
+
+        </div>
+
+        <button
+            class="profile-menu-btn"
+            id="openProfileBtn"
+        >
+            ✏️ My Profile
+        </button>
+
+        <button
+            class="saved-menu-btn"
+            id="savedMenuBtn"
+        >
+            🔖 Saved Jobs
+        </button>
+
+        <button
+            class="applications-menu-btn"
+            id="applicationsMenuBtn"
+        >
+            📄 My Applications
+        </button>
+
+        <button
+            class="dropdown-logout-btn"
+            id="dropdownLogoutBtn"
+        >
+            🚪 Logout
+        </button>
+
+    </div>
 
 </div>
 
@@ -72,7 +118,7 @@
     <!-- =========================
          HERO SECTION
     ========================== -->
-
+    
     <section class="hero" id="home">
 
         <div class="hero-content">
@@ -544,9 +590,149 @@
     </footer>
 
     <!-- FOOTER ENDING -->
+     <!-- ==============================
+     PROFILE MODAL
+     ============================== -->
+
+<div class="profile-modal" id="profileModal">
+
+    <div class="profile-modal-box">
+
+        <div class="profile-modal-header">
+            <div>
+                <h2>My Profile</h2>
+                <p>Keep your profile updated</p>
+            </div>
+
+            <button class="close-profile-btn" id="closeProfileBtn">
+                ×
+            </button>
+        </div>
+
+
+        <form id="profileForm">
+
+            <div class="profile-grid">
+
+                <!-- NAME -->
+                <div class="profile-field">
+                    <label>Full Name</label>
+                    <input
+                        type="text"
+                        id="profileName"
+                        placeholder="Enter your name"
+                    >
+                </div>
+
+
+                <!-- EMAIL -->
+                <div class="profile-field">
+                    <label>Email</label>
+                    <input
+                        type="email"
+                        id="profileEmail"
+                        placeholder="Your email"
+                        readonly
+                    >
+                </div>
+
+
+                <!-- PHONE -->
+                <div class="profile-field">
+                    <label>Phone</label>
+                    <input
+                        type="tel"
+                        id="profilePhone"
+                        placeholder="Enter phone number"
+                    >
+                </div>
+
+
+                <!-- LOCATION -->
+                <div class="profile-field">
+                    <label>Location</label>
+                    <input
+                        type="text"
+                        id="profileLocation"
+                        placeholder="e.g. Indore, Madhya Pradesh"
+                    >
+                </div>
+
+
+                <!-- EDUCATION -->
+                <div class="profile-field">
+                    <label>Education</label>
+                    <input
+                        type="text"
+                        id="profileEducation"
+                        placeholder="e.g. B.Tech Computer Science"
+                    >
+                </div>
+
+
+                <!-- EXPERIENCE -->
+                <div class="profile-field">
+                    <label>Experience</label>
+                    <input
+                        type="text"
+                        id="profileExperience"
+                        placeholder="e.g. Fresher / 1 Year"
+                    >
+                </div>
+
+
+                <!-- SKILLS -->
+                <div class="profile-field profile-full">
+                    <label>Skills</label>
+                    <input
+                        type="text"
+                        id="profileSkills"
+                        placeholder="HTML, CSS, JavaScript, C++"
+                    >
+                    <small>Separate skills with commas</small>
+                </div>
+
+
+                <!-- ABOUT -->
+                <div class="profile-field profile-full">
+                    <label>About Me</label>
+                    <textarea
+                        id="profileAbout"
+                        rows="4"
+                        placeholder="Tell employers a little about yourself..."
+                    ></textarea>
+                </div>
+
+            </div>
+
+
+            <div class="profile-modal-footer">
+
+                <button
+                    type="button"
+                    class="cancel-profile-btn"
+                    id="cancelProfileBtn"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    type="submit"
+                    class="save-profile-btn"
+                >
+                    Save Profile
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
 
     <script src="dashboard.js"></script>
-
+<script src="profile.js"></script>
 
 
 <script>
@@ -600,6 +786,8 @@
     }
 
 </script>
+
+
 </body>
 
 </html>

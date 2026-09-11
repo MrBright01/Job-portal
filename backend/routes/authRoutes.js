@@ -146,6 +146,124 @@ router.post("/login", async (req, res) => {
 
 
 // =====================================
+// GET PROFILE
+// GET /api/auth/profile/:id
+// =====================================
+
+router.get("/profile/:id", async (req, res) => {
+
+    try {
+
+        const user = await User.findById(req.params.id).select("-password");
+
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+
+        res.status(200).json({
+            user
+        });
+
+    } catch (error) {
+
+        console.error("GET PROFILE ERROR:", error);
+
+        res.status(500).json({
+            message: "Server error"
+        });
+    }
+});
+
+
+// =====================================
+// UPDATE PROFILE
+// PUT /api/auth/profile/:id
+// =====================================
+
+router.put("/profile/:id", async (req, res) => {
+
+    try {
+
+        const {
+            name,
+            phone,
+            location,
+            education,
+            skills,
+            experience,
+            about
+        } = req.body;
+
+        const user = await User.findById(req.params.id);
+
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+
+        // Update only provided fields
+        if (name !== undefined) {
+            user.name = name.trim();
+        }
+
+        if (phone !== undefined) {
+            user.phone = phone.trim();
+        }
+
+        if (location !== undefined) {
+            user.location = location.trim();
+        }
+
+        if (education !== undefined) {
+            user.education = education.trim();
+        }
+
+        if (skills !== undefined) {
+            user.skills = Array.isArray(skills)
+                ? skills
+                : [];
+        }
+
+        if (experience !== undefined) {
+            user.experience = experience.trim();
+        }
+
+        if (about !== undefined) {
+            user.about = about.trim();
+        }
+
+        await user.save();
+
+        res.status(200).json({
+            message: "Profile updated successfully",
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                phone: user.phone,
+                location: user.location,
+                education: user.education,
+                skills: user.skills,
+                experience: user.experience,
+                about: user.about,
+                profilePhoto: user.profilePhoto
+            }
+        });
+
+    } catch (error) {
+
+        console.error("UPDATE PROFILE ERROR:", error);
+
+        res.status(500).json({
+            message: "Server error"
+        });
+    }
+});
+// =====================================
 // EXPORT
 // =====================================
 

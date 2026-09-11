@@ -350,8 +350,9 @@ async function loadJobs() {
                 <button
                     class="apply-btn"
                     data-job-id="${job._id}">
-                    Apply Now
+                    Apply 
                 </button>
+        
             `;
 
             jobContainer.appendChild(jobCard);
@@ -414,17 +415,27 @@ function displayJobs(jobList) {
                     })
                     .join("")}
             </div>
+             
+             <button class="details-btn">
+    View Details
+</button>
 
-            <button
-                class="apply-btn"
-                data-job-id="${job._id}">
-                Apply Now
-            </button>
+<button
+    class="apply-btn"
+    data-job-id="${job._id}">
+    Apply Now
+</button>
+
+<span class="bookmark ${isJobSaved(job.title) ? "saved" : ""}">
+    ${isJobSaved(job.title) ? "♥" : "♡"}
+</span>
         `;
+        
 
         jobContainer.appendChild(jobCard);
 
     });
+    updateBookmarkIcons();
 }
 
 
@@ -808,7 +819,6 @@ viewAllBtn.addEventListener(
     }
 );
 
-
 // ==============================
 // BOOKMARK + APPLY
 // ==============================
@@ -817,143 +827,71 @@ jobContainer.addEventListener(
     "click",
     function(event) {
 
-
         // ==========================
         // BOOKMARK
         // ==========================
 
-        if (
-            event.target.classList.contains(
-                "bookmark"
-            )
-        ) {
+        if (event.target.classList.contains("bookmark")) {
 
-            const bookmark =
-                event.target;
-
+            const bookmark = event.target;
 
             const jobCard =
                 bookmark.closest(".job-card");
 
+            if (!jobCard) return;
 
             const jobTitle =
                 jobCard
-                .querySelector("h3")
-                .textContent;
+                    .querySelector("h3")
+                    .textContent
+                    .trim();
 
-
+            // Toggle bookmark
             toggleBookmark(jobTitle);
 
-
-            // Update bookmark
-
+            // Update icon
             if (isJobSaved(jobTitle)) {
 
                 bookmark.textContent = "♥";
-
-                bookmark.classList.add(
-                    "saved"
-                );
+                bookmark.classList.add("saved");
 
             } else {
 
                 bookmark.textContent = "♡";
-
-                bookmark.classList.remove(
-                    "saved"
-                );
-
+                bookmark.classList.remove("saved");
             }
-            function toggleBookmark(jobTitle) {
 
-    if (isJobSaved(jobTitle)) {
-
-      let savedJobs =
-    JSON.parse(localStorage.getItem("savedJobs")) || [];
-
-    } else {
-
-        savedJobs.push(jobTitle);
-    }
-
-    localStorage.setItem(
-        "savedJobs",
-        JSON.stringify(savedJobs)
-    );
-}
-
+            return;
         }
-        // ==============================
-// SAVED JOBS NAVIGATION
-// ==============================
-
-const savedJobsBtn =
-    document.getElementById("savedJobsBtn");
-
-savedJobsBtn.addEventListener("click", function(event) {
-
-    event.preventDefault();
-
-    // Get currently saved jobs
-    const savedJobList = jobsData.filter(function(job) {
-
-        return savedJobs.includes(job.title);
-
-    });
-
-    // Show saved jobs
-    showingAllJobs = true;
-
-    displayJobs(savedJobList);
-
-    // Update job count
-    jobCount.textContent =
-        `${savedJobList.length} Saved Jobs`;
-
-    // Scroll to jobs section
-    document.getElementById("jobs").scrollIntoView({
-        behavior: "smooth"
-    });
-
-});
 
 
         // ==========================
         // APPLY BUTTON
         // ==========================
 
-        if (
-            event.target.classList.contains(
-                "apply-btn"
-            )
-        ) {
+        if (event.target.classList.contains("apply-btn")) {
 
-            const button =
-                event.target;
-
+            const button = event.target;
 
             const jobCard =
                 button.closest(".job-card");
 
+            if (!jobCard) return;
 
             const jobTitle =
                 jobCard
-                .querySelector("h3")
-                .textContent;
+                    .querySelector("h3")
+                    .textContent
+                    .trim();
 
+            selectedJob.textContent = jobTitle;
 
-            selectedJob.textContent =
-                jobTitle;
-
-
-            applyModal.classList.add(
-                "show"
-            );
-
+            applyModal.classList.add("show");
         }
 
     }
 );
+
 
 
 // ==============================
@@ -1022,8 +960,8 @@ applyForm.addEventListener(
         applyModal.classList.remove(
             "show"
         );
-
     }
+    
 );
 
 
