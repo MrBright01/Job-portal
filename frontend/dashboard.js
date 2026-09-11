@@ -616,9 +616,18 @@ const selectedJob =
     document.getElementById(
         "selectedJob"
     );
+    let selectedJobId = null;
 
 
 function openApplyModal(job) {
+
+    selectedJobId = job._id;
+
+    console.log(
+        "Selected Job ID:",
+        selectedJobId
+    );
+
 
     if (selectedJob) {
 
@@ -654,7 +663,6 @@ if (closeModal) {
 
 }
 
-
 // ==============================
 // APPLY FORM
 // ==============================
@@ -663,29 +671,73 @@ if (applyForm) {
 
     applyForm.addEventListener(
         "submit",
-        function (event) {
+        async function (event) {
 
             event.preventDefault();
 
+            try {
 
-            alert(
-                "Application submitted successfully! 🎉"
-            );
+                const response = await fetch(
+                    `${API_BASE}/applications`,
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            jobId: selectedJobId,
+                            applicantId: loggedInUser.id
+                        })
+                    }
+                );
 
 
-            applyForm.reset();
+                const data = await response.json();
 
 
-            applyModal.classList.remove(
-                "show"
-            );
+                if (!response.ok) {
+
+                    alert(
+                        data.message ||
+                        "Unable to submit application."
+                    );
+
+                    return;
+                }
+
+
+                alert(
+                    "Application submitted successfully! 🎉"
+                );
+
+
+                applyForm.reset();
+
+
+                applyModal.classList.remove(
+                    "show"
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "Application error:",
+                    error
+                );
+
+                alert(
+                    "Something went wrong. Please try again."
+                );
+
+            }
 
         }
     );
 
 }
-
-
 // ==============================
 // SAVED JOBS
 // ==============================
