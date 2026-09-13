@@ -821,18 +821,139 @@ if (myJobsNavBtn) {
 
 async function openApplicants(jobId) {
 
-    console.log(
-        "Opening applicants for:",
-        jobId
-    );
+    const applicantsContainer =
+        document.getElementById("applicantsContainer");
 
+    if (!applicantsContainer) {
+        alert("Applicants section not found.");
+        return;
+    }
 
-    // This will be connected
-    // to the employer applicant API
-    // in the next backend step.
+    applicantsContainer.innerHTML = `
+        <p class="loading">
+            Loading applicants...
+        </p>
+    `;
 
-    alert(
-        "Applicant management is being connected..."
-    );
+    document
+        .getElementById("applicants")
+        .scrollIntoView({
+            behavior: "smooth"
+        });
 
+    try {
+
+        const response = await fetch(
+            `https://job-portal-1-5gno.onrender.com/api/applications/job/${jobId}`
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                data.message || "Failed to load applicants"
+            );
+        }
+
+        const applications =
+            data.applications || [];
+
+        if (applications.length === 0) {
+
+            applicantsContainer.innerHTML = `
+                <div class="empty-applicants">
+                    <h3>No Applicants Yet</h3>
+                    <p>
+                        No one has applied for this job yet.
+                    </p>
+                </div>
+            `;
+
+            return;
+        }
+
+        applicantsContainer.innerHTML = `
+            <div class="applicants-header">
+                <h3>
+                    Applicants (${applications.length})
+                </h3>
+            </div>
+
+            <div class="applicants-list">
+
+                ${applications.map(application => {
+
+                    const applicant =
+                        application.applicant || {};
+
+                    return `
+                        <div class="applicant-card">
+
+                            <div class="applicant-info">
+
+                                <h3>
+                                    ${applicant.name || "Unknown Applicant"}
+                                </h3>
+
+                                <p>
+                                    📧 ${applicant.email || "No email"}
+                                </p>
+
+                                <p>
+                                    📞 ${applicant.phone || "No phone"}
+                                </p>
+
+                                <p>
+                                    📍 ${applicant.location || "Location not provided"}
+                                </p>
+
+                                <p>
+                                    🎓 ${applicant.education || "Education not provided"}
+                                </p>
+
+                                <p>
+                                    💼 ${applicant.experience || "Experience not provided"}
+                                </p>
+
+                            </div>
+
+                            <div class="application-status">
+
+                                <span class="status-badge">
+                                    ${application.status}
+                                </span>
+
+                                <p>
+                                    Applied:
+                                    ${new Date(
+                                        application.createdAt
+                                    ).toLocaleDateString()}
+                                </p>
+
+                            </div>
+
+                        </div>
+                    `;
+
+                }).join("")}
+
+            </div>
+        `;
+
+    } catch (error) {
+
+        console.error(
+            "Load applicants error:",
+            error
+        );
+
+        applicantsContainer.innerHTML = `
+            <div class="error-message">
+                <h3>Failed to Load Applicants</h3>
+                <p>
+                    ${error.message}
+                </p>
+            </div>
+        `;
+    }
 }
