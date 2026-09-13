@@ -411,116 +411,51 @@ body {
 
 }
 /* =========================================
-   JOB APPLICANTS SECTION
-========================================= */
-
-.applicants-section {
-    margin-top: 40px;
-    padding: 30px;
-
-    background: #ffffff;
-
-    border-radius: 18px;
-
-    box-shadow:
-        0 8px 30px rgba(0, 0, 0, 0.06);
-}
-
-
-/* =========================================
-   SECTION HEADER
-========================================= */
-
-.applicants-section .section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    margin-bottom: 25px;
-}
-
-.applicants-section .section-header h2 {
-    margin: 0 0 7px;
-
-    font-size: 26px;
-    font-weight: 700;
-
-    color: #111827;
-}
-
-.applicants-section .section-header p {
-    margin: 0;
-
-    color: #6b7280;
-
-    font-size: 14px;
-}
-
-
-/* =========================================
-   APPLICANTS CONTAINER
-========================================= */
-
-.applicants-container {
-    display: flex;
-    flex-direction: column;
-
-    gap: 18px;
-}
-
-
-/* =========================================
-   APPLICANT CARD
+   APPLICANT CARD - FINAL DESIGN
 ========================================= */
 
 .applicant-card {
+    position: relative;
 
-    display: flex;
+    display: grid;
 
-    justify-content: space-between;
+    grid-template-columns: 1fr auto;
 
-    gap: 30px;
+    gap: 20px;
 
     padding: 24px;
 
-    background: #f8fafc;
+    background: #ffffff;
 
     border: 1px solid #e5e7eb;
 
     border-radius: 16px;
 
-    transition: all 0.25s ease;
+    transition: 0.25s ease;
 }
 
 
 .applicant-card:hover {
-
-    transform: translateY(-3px);
-
-    background: #ffffff;
-
     border-color: #2563eb;
 
     box-shadow:
-        0 10px 25px rgba(0, 0, 0, 0.08);
+        0 8px 24px rgba(0, 0, 0, 0.08);
+
+    transform: translateY(-2px);
 }
 
 
 /* =========================================
-   LEFT SIDE
+   APPLICANT INFORMATION
 ========================================= */
 
 .applicant-info {
-
-    flex: 1;
+    min-width: 0;
 }
 
 
-/* Applicant name */
-
 .applicant-info h3 {
-
-    margin: 0 0 16px;
+    margin: 0 0 14px;
 
     font-size: 20px;
 
@@ -528,22 +463,8 @@ body {
 }
 
 
-/* Applicant details */
-
-.applicant-details {
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(2, minmax(200px, 1fr));
-
-    gap: 10px 25px;
-}
-
-
-/* Individual detail */
-
-.applicant-detail {
+.applicant-info p {
+    margin: 7px 0;
 
     font-size: 14px;
 
@@ -551,77 +472,29 @@ body {
 }
 
 
-.applicant-detail strong {
-
-    color: #1f2937;
-}
-
-
 /* =========================================
-   SKILLS
-========================================= */
-
-.applicant-skills {
-
-    display: flex;
-
-    flex-wrap: wrap;
-
-    gap: 7px;
-
-    margin-top: 15px;
-}
-
-
-.skill-tag {
-
-    padding: 5px 10px;
-
-    background: #eff6ff;
-
-    color: #2563eb;
-
-    border-radius: 20px;
-
-    font-size: 12px;
-
-    font-weight: 600;
-}
-
-
-/* =========================================
-   RIGHT SIDE
+   STATUS
 ========================================= */
 
 .application-status {
-
-    min-width: 180px;
-
     display: flex;
 
     flex-direction: column;
 
     align-items: flex-end;
 
-    justify-content: space-between;
+    min-width: 140px;
 }
 
 
-/* =========================================
-   STATUS BADGE
-========================================= */
-
 .status-badge {
-
-    display: inline-block;
-
     padding: 7px 14px;
 
     border-radius: 20px;
 
-    background: #dbeafe;
+    background: #eff6ff;
 
-    color: #1d4ed8;
+    color: #2563eb;
 
     font-size: 12px;
 
@@ -631,45 +504,56 @@ body {
 }
 
 
-/* =========================================
-   APPLICATION DATE
-========================================= */
-
-.application-date {
-
+.application-status p {
     margin-top: 10px;
 
     font-size: 12px;
 
     color: #9ca3af;
+
+    text-align: right;
 }
 
 
 /* =========================================
-   ACTION BUTTONS
+   ACTION BUTTON AREA
 ========================================= */
 
 .applicant-actions {
 
+    grid-column: 1 / -1;
+
     display: flex;
 
-    gap: 8px;
+    justify-content: flex-end;
 
-    margin-top: 18px;
+    align-items: center;
 
-    flex-wrap: wrap;
+    gap: 10px;
+
+    padding-top: 18px;
+
+    margin-top: 5px;
+
+    border-top: 1px solid #f0f0f0;
 }
 
 
+/* =========================================
+   ALL BUTTONS
+========================================= */
+
 .applicant-actions button {
 
-    border: none;
+    min-width: 100px;
 
-    padding: 8px 14px;
+    padding: 9px 16px;
 
     border-radius: 8px;
 
-    font-size: 12px;
+    border: 1px solid transparent;
+
+    font-size: 13px;
 
     font-weight: 600;
 
@@ -679,181 +563,77 @@ body {
 }
 
 
-/* View profile */
-
-.view-profile-btn {
-
-    background: #eef2ff;
-
-    color: #4338ca;
-}
-
-
-.view-profile-btn:hover {
-
-    background: #e0e7ff;
-}
-
-
-/* Shortlist */
+/* =========================================
+   SHORTLIST
+========================================= */
 
 .shortlist-btn {
 
     background: #eff6ff;
 
     color: #2563eb;
+
+    border-color: #bfdbfe !important;
 }
 
 
 .shortlist-btn:hover {
 
     background: #dbeafe;
+
+    border-color: #93c5fd !important;
 }
 
 
-/* Accept */
+/* =========================================
+   ACCEPT
+========================================= */
 
 .accept-btn {
 
     background: #ecfdf5;
 
-    color: #059669;
+    color: #047857;
+
+    border-color: #a7f3d0 !important;
 }
 
 
 .accept-btn:hover {
 
     background: #d1fae5;
+
+    border-color: #6ee7b7 !important;
 }
 
 
-/* Reject */
+/* =========================================
+   REJECT
+========================================= */
 
 .reject-btn {
 
     background: #fef2f2;
 
     color: #dc2626;
+
+    border-color: #fecaca !important;
 }
 
 
 .reject-btn:hover {
 
     background: #fee2e2;
+
+    border-color: #fca5a5 !important;
 }
 
 
 /* =========================================
-   EMPTY STATE
+   BUTTON PRESS EFFECT
 ========================================= */
 
-.applicants-empty {
+.applicant-actions button:active {
 
-    text-align: center;
-
-    padding: 60px 20px;
-
-    background: #f8fafc;
-
-    border: 2px dashed #d1d5db;
-
-    border-radius: 16px;
-}
-
-
-.empty-icon {
-
-    width: 65px;
-
-    height: 65px;
-
-    margin: 0 auto 15px;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    border-radius: 50%;
-
-    background: #eff6ff;
-
-    font-size: 28px;
-}
-
-
-.applicants-empty h3 {
-
-    margin: 0 0 8px;
-
-    color: #374151;
-
-    font-size: 19px;
-}
-
-
-.applicants-empty p {
-
-    margin: 0;
-
-    max-width: 500px;
-
-    margin-left: auto;
-
-    margin-right: auto;
-
-    color: #9ca3af;
-
-    font-size: 14px;
-
-    line-height: 1.6;
-}
-
-
-/* =========================================
-   LOADING
-========================================= */
-
-.applicants-container .loading {
-
-    padding: 40px;
-
-    text-align: center;
-
-    color: #6b7280;
-}
-
-
-/* =========================================
-   ERROR
-========================================= */
-
-.error-message {
-
-    padding: 25px;
-
-    background: #fef2f2;
-
-    border: 1px solid #fecaca;
-
-    border-radius: 12px;
-}
-
-
-.error-message h3 {
-
-    margin: 0 0 8px;
-
-    color: #b91c1c;
-}
-
-
-.error-message p {
-
-    margin: 0;
-
-    color: #dc2626;
-
-    font-size: 14px;
+    transform: scale(0.96);
 }
