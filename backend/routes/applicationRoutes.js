@@ -19,6 +19,10 @@ router.post("/", async (req, res) => {
         } = req.body;
 
 
+        // ===============================
+        // VALIDATE
+        // ===============================
+
         if (!jobId || !applicantId) {
 
             return res.status(400).json({
@@ -29,7 +33,9 @@ router.post("/", async (req, res) => {
         }
 
 
-        // Check if already applied
+        // ===============================
+        // CHECK DUPLICATE
+        // ===============================
 
         const existingApplication =
             await Application.findOne({
@@ -48,7 +54,9 @@ router.post("/", async (req, res) => {
         }
 
 
-        // Create application
+        // ===============================
+        // CREATE APPLICATION
+        // ===============================
 
         const application =
             new Application({
@@ -73,6 +81,19 @@ router.post("/", async (req, res) => {
             "Application error:",
             error
         );
+
+
+        // Duplicate index protection
+
+        if (error.code === 11000) {
+
+            return res.status(400).json({
+                message:
+                    "You have already applied for this job"
+            });
+
+        }
+
 
         res.status(500).json({
             message:
@@ -100,7 +121,9 @@ router.get(
                         applicant:
                             req.params.userId
                     })
-                    .populate("job")
+                    .populate(
+                        "job"
+                    )
                     .sort({
                         createdAt: -1
                     });
@@ -113,7 +136,64 @@ router.get(
 
         } catch (error) {
 
-            console.error(error);
+            console.error(
+                "Get user applications error:",
+                error
+            );
+
+
+            res.status(500).json({
+                message:
+                    "Server error"
+            });
+
+        }
+
+    }
+);
+
+
+// =====================================
+// GET APPLICANTS FOR A JOB
+// =====================================
+
+router.get(
+    "/job/:jobId",
+    async (req, res) => {
+
+        try {
+
+            const applications =
+                await Application
+                    .find({
+                        job:
+                            req.params.jobId
+                    })
+                    .populate(
+                        "applicant",
+                        "name email phone location education skills experience about profilePhoto"
+                    )
+                    .populate(
+                        "job",
+                        "title company location salary jobType"
+                    )
+                    .sort({
+                        createdAt: -1
+                    });
+
+
+            res.json({
+                applications
+            });
+
+
+        } catch (error) {
+
+            console.error(
+                "Get applicants error:",
+                error
+            );
+
 
             res.status(500).json({
                 message:

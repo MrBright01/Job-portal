@@ -35,6 +35,13 @@ const jobSchema = new mongoose.Schema(
             type: String,
             enum: ["Full-time", "Part-time", "Internship", "Contract"],
             default: "Full-time"
+        },
+
+        // EMPLOYER WHO POSTED THE JOB
+        postedBy: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            required: true
         }
     },
     {

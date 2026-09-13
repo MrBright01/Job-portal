@@ -26,9 +26,6 @@ if (!loggedInUser) {
 // CHECK EMPLOYER
 // ==============================
 
-// For now, anything that is not employer
-// will be sent to the job seeker dashboard.
-
 if (
     loggedInUser &&
     loggedInUser.role !== "employer"
@@ -103,58 +100,70 @@ if (loggedInUser) {
 // LOGOUT
 // ==============================
 
-logoutBtn.addEventListener(
-    "click",
-    function () {
+if (logoutBtn) {
 
-        localStorage.removeItem(
-            "loggedInUser"
-        );
+    logoutBtn.addEventListener(
+        "click",
+        function () {
 
-        window.location.href =
-            "index.html";
+            localStorage.removeItem(
+                "loggedInUser"
+            );
 
-    }
-);
+            window.location.href =
+                "index.html";
+
+        }
+    );
+
+}
 
 
 // ==============================
 // SHOW POST JOB FORM
 // ==============================
 
-showPostJobBtn.addEventListener(
-    "click",
-    function () {
+if (showPostJobBtn) {
 
-        postJobSection.scrollIntoView({
-            behavior: "smooth"
-        });
+    showPostJobBtn.addEventListener(
+        "click",
+        function () {
 
-    }
-);
+            postJobSection.scrollIntoView({
+                behavior: "smooth"
+            });
+
+        }
+    );
+
+}
 
 
 // ==============================
 // CANCEL POST JOB
 // ==============================
 
-cancelPostJob.addEventListener(
-    "click",
-    function () {
+if (cancelPostJob) {
 
-        postJobForm.reset();
+    cancelPostJob.addEventListener(
+        "click",
+        function () {
 
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        });
+            postJobForm.reset();
 
-    }
-);
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+
+        }
+    );
+
+}
 
 
 // ==============================
-// LOAD JOBS
+// LOAD EMPLOYER JOBS
 // ==============================
 
 async function loadEmployerJobs() {
@@ -166,7 +175,7 @@ async function loadEmployerJobs() {
 
         const response =
             await fetch(
-                fetch("https://job-portal-1-5gno.onrender.com/api/jobs")
+                "https://job-portal-1-5gno.onrender.com/api/jobs"
             );
 
 
@@ -190,47 +199,40 @@ async function loadEmployerJobs() {
 
 
         // ==============================
-        // FILTER EMPLOYER JOBS
+        // FILTER ONLY THIS EMPLOYER'S JOBS
         // ==============================
 
-        /*
-            This part supports employerId
-            if your backend provides it.
-
-            If your current jobs don't have
-            employerId yet, all jobs will be
-            displayed temporarily.
-        */
-
-        let employerJobs = jobs;
+        const employerId =
+            loggedInUser.id ||
+            loggedInUser._id;
 
 
-        if (loggedInUser.id) {
+        const employerJobs =
+            jobs.filter(function (job) {
 
-            const filteredJobs =
-                jobs.filter(function (job) {
-
-                    return (
-                        job.employerId ===
-                        loggedInUser.id ||
-
-                        job.employerId ===
-                        loggedInUser._id
-                    );
-
-                });
+                if (!job.postedBy) {
+                    return false;
+                }
 
 
-            // Only filter if matching jobs
-            // were actually found.
-            if (filteredJobs.length > 0) {
+                const postedById =
+                    typeof job.postedBy === "object"
+                        ? job.postedBy._id
+                        : job.postedBy;
 
-                employerJobs =
-                    filteredJobs;
 
-            }
+                return (
+                    String(postedById) ===
+                    String(employerId)
+                );
 
-        }
+            });
+
+
+        console.log(
+            "My employer jobs:",
+            employerJobs
+        );
 
 
         // ==============================
@@ -245,8 +247,8 @@ async function loadEmployerJobs() {
             employerJobs.length;
 
 
-        // Applications will be connected
-        // later with the application API.
+        // Applications will be
+        // connected in the next step.
 
         totalApplications.textContent =
             "0";
@@ -285,7 +287,9 @@ async function loadEmployerJobs() {
                 "job-card";
 
 
-            // Skills
+            // ==============================
+            // SKILLS
+            // ==============================
 
             let skillsText = "";
 
@@ -301,6 +305,10 @@ async function loadEmployerJobs() {
 
             }
 
+
+            // ==============================
+            // JOB CARD
+            // ==============================
 
             jobCard.innerHTML = `
 
@@ -323,11 +331,7 @@ async function loadEmployerJobs() {
                 </p>
 
                 <p>
-                    💼 ${job.type || "Full Time"}
-                </p>
-
-                <p>
-                    🏷️ ${job.category || "Other"}
+                    💼 ${job.jobType || "Full-time"}
                 </p>
 
                 <p>
@@ -337,8 +341,17 @@ async function loadEmployerJobs() {
                 <div class="job-actions">
 
                     <button
+                        class="secondary-btn applicants-job-btn"
+                        data-id="${job._id}"
+                        type="button"
+                    >
+                        👥 View Applicants
+                    </button>
+
+                    <button
                         class="secondary-btn delete-job-btn"
-                        data-id="${job._id || job.id}"
+                        data-id="${job._id}"
+                        type="button"
                     >
                         Delete
                     </button>
@@ -375,6 +388,35 @@ async function loadEmployerJobs() {
                         button.dataset.id;
 
                     deleteJob(jobId);
+
+                }
+            );
+
+        });
+
+
+        // ==============================
+        // APPLICANT BUTTONS
+        // ==============================
+
+        const applicantButtons =
+            document.querySelectorAll(
+                ".applicants-job-btn"
+            );
+
+
+        applicantButtons.forEach(function (button) {
+
+            button.addEventListener(
+                "click",
+                function () {
+
+                    const jobId =
+                        button.dataset.id;
+
+                    openApplicants(
+                        jobId
+                    );
 
                 }
             );
@@ -437,7 +479,7 @@ postJobForm.addEventListener(
                 .value;
 
 
-        const type =
+        const jobType =
             document
                 .getElementById("jobType")
                 .value;
@@ -500,27 +542,22 @@ postJobForm.addEventListener(
 
             company: company,
 
-            category: category,
-
             location: location,
 
             salary: salary,
 
-            type: type,
+            description: description,
 
             skills: skills,
 
-            description: description,
+            jobType: jobType,
 
-            // Send employer information
-            // if backend supports it.
+            // IMPORTANT:
+            // Connect job to employer
 
-            employerId:
+            postedBy:
                 loggedInUser.id ||
-                loggedInUser._id,
-
-            employerName:
-                loggedInUser.name
+                loggedInUser._id
 
         };
 
@@ -701,14 +738,18 @@ async function deleteJob(jobId) {
 // REFRESH JOBS
 // ==============================
 
-refreshJobs.addEventListener(
-    "click",
-    function () {
+if (refreshJobs) {
 
-        loadEmployerJobs();
+    refreshJobs.addEventListener(
+        "click",
+        function () {
 
-    }
-);
+            loadEmployerJobs();
+
+        }
+    );
+
+}
 
 
 // ==============================
@@ -717,12 +758,15 @@ refreshJobs.addEventListener(
 
 loadEmployerJobs();
 
+
 // ==============================
 // POST JOB NAV BUTTON
 // ==============================
 
 const postJobNavBtn =
-    document.getElementById("postJobNavBtn");
+    document.getElementById(
+        "postJobNavBtn"
+    );
 
 if (postJobNavBtn) {
 
@@ -740,12 +784,16 @@ if (postJobNavBtn) {
     );
 
 }
+
+
 // ==============================
 // MY JOBS NAV BUTTON
 // ==============================
 
 const myJobsNavBtn =
-    document.getElementById("myJobsNavBtn");
+    document.getElementById(
+        "myJobsNavBtn"
+    );
 
 if (myJobsNavBtn) {
 
@@ -762,6 +810,29 @@ if (myJobsNavBtn) {
                 });
 
         }
+    );
+
+}
+
+
+// ==============================
+// OPEN APPLICANTS
+// ==============================
+
+async function openApplicants(jobId) {
+
+    console.log(
+        "Opening applicants for:",
+        jobId
+    );
+
+
+    // This will be connected
+    // to the employer applicant API
+    // in the next backend step.
+
+    alert(
+        "Applicant management is being connected..."
     );
 
 }
