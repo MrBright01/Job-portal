@@ -870,7 +870,6 @@ if (myJobsNavBtn) {
 
 }
 
-
 // ==============================
 // OPEN APPLICANTS
 // ==============================
@@ -907,33 +906,53 @@ async function openApplicants(jobId) {
 
         if (!response.ok) {
             throw new Error(
-                data.message || "Failed to load applicants"
+                data.message ||
+                "Failed to load applicants"
             );
         }
 
         const applications =
             data.applications || [];
 
+
+        // ==============================
+        // NO APPLICANTS
+        // ==============================
+
         if (applications.length === 0) {
 
             applicantsContainer.innerHTML = `
                 <div class="empty-applicants">
-                    <h3>No Applicants Yet</h3>
+
+                    <h3>
+                        No Applicants Yet
+                    </h3>
+
                     <p>
                         No one has applied for this job yet.
                     </p>
+
                 </div>
             `;
 
             return;
         }
 
+
+        // ==============================
+        // DISPLAY APPLICANTS
+        // ==============================
+
         applicantsContainer.innerHTML = `
+
             <div class="applicants-header">
+
                 <h3>
                     Applicants (${applications.length})
                 </h3>
+
             </div>
+
 
             <div class="applicants-list">
 
@@ -943,37 +962,49 @@ async function openApplicants(jobId) {
                         application.applicant || {};
 
                     return `
+
                         <div class="applicant-card">
 
                             <div class="applicant-info">
 
                                 <h3>
-                                    ${applicant.name || "Unknown Applicant"}
+                                    ${applicant.name ||
+                                    "Unknown Applicant"}
                                 </h3>
 
                                 <p>
-                                    📧 ${applicant.email || "No email"}
+                                    📧
+                                    ${applicant.email ||
+                                    "No email"}
                                 </p>
 
                                 <p>
-                                    📞 ${applicant.phone || "No phone"}
+                                    📞
+                                    ${applicant.phone ||
+                                    "No phone"}
                                 </p>
 
                                 <p>
-                                    📍 ${applicant.location || "Location not provided"}
+                                    📍
+                                    ${applicant.location ||
+                                    "Location not provided"}
                                 </p>
 
                                 <p>
-                                    🎓 ${applicant.education || "Education not provided"}
+                                    🎓
+                                    ${applicant.education ||
+                                    "Education not provided"}
                                 </p>
 
                                 <p>
-                                    💼 ${applicant.experience || "Experience not provided"}
+                                    💼
+                                    ${applicant.experience ||
+                                    "Education not provided"}
                                 </p>
 
                             </div>
 
-                            
+
                             <div class="application-status">
 
                                 <span class="status-badge">
@@ -989,34 +1020,120 @@ async function openApplicants(jobId) {
 
                             </div>
 
-<button
-    class="shortlist-btn"
-    data-id="${application._id}"
->
-    Shortlist
-</button>
 
-<button
-    class="accept-btn"
-    data-id="${application._id}"
->
-    Accept
-</button>
+                            <!-- =========================
+                                 ACTION BUTTONS
+                            ========================== -->
 
-<button
-    class="reject-btn"
-    data-id="${application._id}"
->
-    Reject
-</button>
+                            <div class="applicant-actions">
+
+                                <button
+                                    class="shortlist-btn"
+                                    data-id="${application._id}"
+                                >
+                                    Shortlist
+                                </button>
+
+
+                                <button
+                                    class="accept-btn"
+                                    data-id="${application._id}"
+                                >
+                                    Accept
+                                </button>
+
+
+                                <button
+                                    class="reject-btn"
+                                    data-id="${application._id}"
+                                >
+                                    Reject
+                                </button>
+
+                            </div>
+
                         </div>
+
                     `;
-                    
 
                 }).join("")}
 
             </div>
+
         `;
+
+
+        // ==============================
+        // SHORTLIST BUTTONS
+        // ==============================
+
+        applicantsContainer
+            .querySelectorAll(".shortlist-btn")
+            .forEach(button => {
+
+                button.addEventListener(
+                    "click",
+                    function () {
+
+                        updateApplicationStatus(
+                            this.dataset.id,
+                            "Shortlisted",
+                            jobId
+                        );
+
+                    }
+                );
+
+            });
+
+
+        // ==============================
+        // ACCEPT BUTTONS
+        // ==============================
+
+        applicantsContainer
+            .querySelectorAll(".accept-btn")
+            .forEach(button => {
+
+                button.addEventListener(
+                    "click",
+                    function () {
+
+                        updateApplicationStatus(
+                            this.dataset.id,
+                            "Accepted",
+                            jobId
+                        );
+
+                    }
+                );
+
+            });
+
+
+        // ==============================
+        // REJECT BUTTONS
+        // ==============================
+
+        applicantsContainer
+            .querySelectorAll(".reject-btn")
+            .forEach(button => {
+
+                button.addEventListener(
+                    "click",
+                    function () {
+
+                        updateApplicationStatus(
+                            this.dataset.id,
+                            "Rejected",
+                            jobId
+                        );
+
+                    }
+                );
+
+            });
+
 
     } catch (error) {
 
@@ -1027,105 +1144,42 @@ async function openApplicants(jobId) {
 
         applicantsContainer.innerHTML = `
             <div class="error-message">
-                <h3>Failed to Load Applicants</h3>
+
+                <h3>
+                    Failed to Load Applicants
+                </h3>
+
                 <p>
                     ${error.message}
                 </p>
+
             </div>
         `;
-        // =========================================
-// APPLICANT ACTION BUTTONS
-// =========================================
 
-applicantsContainer
-    .querySelectorAll(".shortlist-btn")
-    .forEach(button => {
-
-        button.addEventListener(
-            "click",
-            function () {
-
-                updateApplicationStatus(
-                    this.dataset.id,
-                    "Shortlisted",
-                    jobId
-                );
-
-            }
-        );
-
-    });
-
-
-applicantsContainer
-    .querySelectorAll(".accept-btn")
-    .forEach(button => {
-
-        button.addEventListener(
-            "click",
-            function () {
-
-                updateApplicationStatus(
-                    this.dataset.id,
-                    "Accepted",
-                    jobId
-                );
-
-            }
-        );
-
-    });
-
-
-applicantsContainer
-    .querySelectorAll(".reject-btn")
-    .forEach(button => {
-
-        button.addEventListener(
-            "click",
-            function () {
-
-                updateApplicationStatus(
-                    this.dataset.id,
-                    "Rejected",
-                    jobId
-                );
-
-            }
-        );
-
-    });
     }
 }
-// =========================================
-// UPDATE APPLICATION STATUS
-// =========================================
-
 async function updateApplicationStatus(
     applicationId,
     status,
     jobId
 ) {
-
-    const confirmAction = confirm(
-        `Are you sure you want to mark this application as ${status}?`
-    );
-
-    if (!confirmAction) {
-        return;
-    }
-
     try {
+
+        const confirmed = confirm(
+            `Are you sure you want to mark this application as ${status}?`
+        );
+
+        if (!confirmed) {
+            return;
+        }
 
         const response = await fetch(
             `https://job-portal-1-5gno.onrender.com/api/applications/${applicationId}/status`,
             {
                 method: "PUT",
-
                 headers: {
                     "Content-Type": "application/json"
                 },
-
                 body: JSON.stringify({
                     status: status
                 })
@@ -1142,7 +1196,7 @@ async function updateApplicationStatus(
         }
 
         alert(
-            `Application marked as ${status}`
+            `Application ${status.toLowerCase()} successfully!`
         );
 
         // Reload applicants
