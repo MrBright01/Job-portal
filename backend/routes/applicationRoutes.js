@@ -265,47 +265,4 @@ router.put("/:applicationId/status", async (req, res) => {
     }
 });
 
-router.put("/:applicationId", async (req, res) => {
-    try {
-
-        const { status } = req.body;
-
-        const application =
-            await Application.findByIdAndUpdate(
-                req.params.applicationId,
-                {
-                    status: status
-                },
-                {
-                    new: true
-                }
-            );
-
-        if (!application) {
-            return res.status(404).json({
-                message: "Application not found"
-            });
-        }
-
-        res.status(200).json({
-            message:
-                `Application updated successfully`,
-            application: application
-        });
-
-    } catch (error) {
-
-        console.error(
-            "Update application error:",
-            error
-        );
-
-        res.status(500).json({
-            message:
-                "Failed to update application",
-            error: error.message
-        });
-    }
-});
-
 module.exports = router;
