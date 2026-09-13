@@ -121,6 +121,7 @@ if (userButton && userDropdown) {
 }
 
 
+
 // ==============================
 // LOGOUT
 // ==============================
@@ -1190,3 +1191,245 @@ if (profileForm) {
 
 // Load profile when dashboard opens
 loadProfile();
+
+// ==============================
+// MY APPLICATIONS - ISOLATED
+// ==============================
+
+(function () {
+
+    const myAppsButton =
+        document.getElementById("applicationsMenuBtn");
+
+    const myAppsSection =
+        document.getElementById("myApplicationsSection");
+
+    const myAppsBackButton =
+        document.getElementById("backToJobsBtn");
+
+    if (!myAppsButton || !myAppsSection) {
+        console.log("My Applications elements not found.");
+        return;
+    }
+
+
+    // OPEN MY APPLICATIONS
+
+    myAppsButton.addEventListener(
+        "click",
+        async function (event) {
+
+            // Stop other click handlers
+            event.preventDefault();
+            event.stopPropagation();
+            event.stopImmediatePropagation();
+
+
+            console.log("My Applications clicked");
+
+
+            // Show applications section
+            myAppsSection.style.display = "block";
+
+
+            // Hide job cards area
+            const jobArea =
+                document.querySelector(".jobs-section");
+
+            if (jobArea) {
+                jobArea.style.display = "none";
+            }
+
+
+            // Close user dropdown
+            const dropdown =
+                document.getElementById("userDropdown");
+
+            if (dropdown) {
+                dropdown.classList.remove("show");
+            }
+
+
+            // Get logged-in user WITHOUT declaring loggedInUser
+            const storedUser =
+                localStorage.getItem("loggedInUser");
+
+            if (!storedUser) {
+
+                console.log(
+                    "No logged-in user found."
+                );
+
+                return;
+            }
+
+
+            const currentUser =
+                JSON.parse(storedUser);
+
+
+            // Load applications
+            const applicationsContainer =
+                document.getElementById(
+                    "applicationsContainer"
+                );
+
+
+            if (!applicationsContainer) {
+                return;
+            }
+
+
+            applicationsContainer.innerHTML =
+                "<p>Loading applications...</p>";
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        `${API_BASE}/applications/user/${currentUser.id}`
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.message ||
+                        "Unable to load applications"
+                    );
+
+                }
+
+
+                console.log(
+                    "Applications received:",
+                    data.applications
+                );
+
+
+                if (
+                    !data.applications ||
+                    data.applications.length === 0
+                ) {
+
+                    applicationsContainer.innerHTML = `
+                        <div class="no-applications">
+                            <h3>No applications yet</h3>
+                            <p>
+                                You haven't applied for any jobs yet.
+                            </p>
+                        </div>
+                    `;
+
+                    return;
+                }
+
+
+                applicationsContainer.innerHTML =
+                    data.applications
+                        .map(function (application) {
+
+                            const job =
+                                application.job;
+
+                            return `
+                                <div class="application-card">
+
+                                    <div class="application-card-info">
+
+                                        <h3>
+                                            ${job?.title || "Job"}
+                                        </h3>
+
+                                        <p>
+                                            ${job?.company || "Company"}
+                                        </p>
+
+                                        <span>
+                                            📍 ${job?.location || "Location not available"}
+                                        </span>
+
+                                    </div>
+
+                                    <div class="application-card-status">
+
+                                        <span class="application-status">
+                                            ${application.status}
+                                        </span>
+
+                                        <small>
+                                            Applied:
+                                            ${new Date(
+                                                application.appliedAt
+                                            ).toLocaleDateString()}
+                                        </small>
+
+                                    </div>
+
+                                </div>
+                            `;
+
+                        })
+                        .join("");
+
+
+            } catch (error) {
+
+                console.error(
+                    "My Applications error:",
+                    error
+                );
+
+
+                applicationsContainer.innerHTML = `
+                    <div class="no-applications">
+                        <h3>Unable to load applications</h3>
+                        <p>
+                            Please try again.
+                        </p>
+                    </div>
+                `;
+
+            }
+
+        },
+        true
+    );
+
+
+    // BACK TO JOBS
+
+    if (myAppsBackButton) {
+
+        myAppsBackButton.addEventListener(
+            "click",
+            function (event) {
+
+                event.preventDefault();
+
+                myAppsSection.style.display =
+                    "none";
+
+
+                const jobArea =
+                    document.querySelector(".jobs-section");
+
+
+                if (jobArea) {
+
+                    jobArea.style.display =
+                        "block";
+
+                }
+
+            }
+        );
+
+    }
+
+})();

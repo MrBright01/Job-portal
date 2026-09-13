@@ -122,6 +122,7 @@
         </button>
 
         <button
+            type="button"
             class="applications-menu-btn"
             id="applicationsMenuBtn"
         >
@@ -617,6 +618,48 @@
     </footer>
 
     <!-- FOOTER ENDING -->
+     <!-- ============================== -->
+<!-- MY APPLICATIONS SECTION -->
+<!-- ============================== -->
+
+<section
+    id="myApplicationsSection"
+    class="my-applications-section"
+    style="display: none;"
+>
+
+    <div class="applications-section-header">
+
+        <div>
+            <h2>My Applications</h2>
+
+            <p>
+                Track the jobs you have applied for.
+            </p>
+        </div>
+
+        <button
+            id="backToJobsBtn"
+            class="back-to-jobs-btn"
+        >
+            ← Back to Jobs
+        </button>
+
+    </div>
+
+
+    <div
+        id="applicationsContainer"
+        class="applications-container"
+    >
+
+        <div class="applications-loading">
+            Loading applications...
+        </div>
+
+    </div>
+
+</section>
      <!-- ==============================
      PROFILE MODAL
      ============================== -->
@@ -758,8 +801,367 @@
 
 </div>
 
+<script>
+(function () {
+
+    const appsButton =
+        document.getElementById("applicationsMenuBtn");
+
+    if (!appsButton) {
+        console.log("My Applications button not found");
+        return;
+    }
+
+    appsButton.type = "button";
+
+    appsButton.addEventListener("click", async function (event) {
+
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+
+        console.log("MY APPLICATIONS OPENED");
+
+
+        /* ==========================
+           CREATE APPLICATION PANEL
+        ========================== */
+
+        let panel =
+            document.getElementById("myApplicationsPanel");
+
+        if (!panel) {
+
+            panel = document.createElement("div");
+
+            panel.id = "myApplicationsPanel";
+
+            panel.innerHTML = `
+                <div style="
+                    position:fixed;
+                    inset:0;
+                    background:rgba(0,0,0,0.45);
+                    z-index:99999;
+                    display:flex;
+                    justify-content:center;
+                    align-items:center;
+                    padding:30px;
+                    box-sizing:border-box;
+                ">
+
+                    <div style="
+                        background:white;
+                        width:100%;
+                        max-width:850px;
+                        max-height:85vh;
+                        overflow:auto;
+                        border-radius:18px;
+                        padding:30px;
+                        box-sizing:border-box;
+                        box-shadow:0 20px 60px rgba(0,0,0,0.25);
+                    ">
+
+                        <div style="
+                            display:flex;
+                            justify-content:space-between;
+                            align-items:center;
+                            margin-bottom:25px;
+                        ">
+
+                            <div>
+                                <h2 style="
+                                    margin:0 0 6px;
+                                    color:#222;
+                                ">
+                                    My Applications
+                                </h2>
+
+                                <p style="
+                                    margin:0;
+                                    color:#777;
+                                ">
+                                    Track your job applications
+                                </p>
+                            </div>
+
+                            <button
+                                id="closeMyApplicationsPanel"
+                                type="button"
+                                style="
+                                    border:none;
+                                    background:#f1f3f5;
+                                    width:38px;
+                                    height:38px;
+                                    border-radius:50%;
+                                    font-size:22px;
+                                    cursor:pointer;
+                                "
+                            >
+                                ×
+                            </button>
+
+                        </div>
+
+                        <div id="myApplicationsContent">
+                            <p style="
+                                text-align:center;
+                                padding:40px;
+                                color:#777;
+                            ">
+                                Loading applications...
+                            </p>
+                        </div>
+
+                    </div>
+
+                </div>
+            `;
+
+            document.body.appendChild(panel);
+
+
+            document
+                .getElementById("closeMyApplicationsPanel")
+                .addEventListener("click", function () {
+
+                    panel.remove();
+
+                });
+
+        }
+
+
+        /* ==========================
+           GET CURRENT USER
+        ========================== */
+
+        const storedApplicationUser =
+            localStorage.getItem("loggedInUser");
+
+
+        if (!storedApplicationUser) {
+
+            document.getElementById(
+                "myApplicationsContent"
+            ).innerHTML = `
+                <p style="
+                    text-align:center;
+                    padding:40px;
+                    color:#dc3545;
+                ">
+                    Please log in again.
+                </p>
+            `;
+
+            return;
+        }
+
+
+        const applicationUser =
+            JSON.parse(storedApplicationUser);
+
+
+        console.log(
+            "Application User ID:",
+            applicationUser.id
+        );
+
+
+        /* ==========================
+           LOAD APPLICATIONS
+        ========================== */
+
+        try {
+
+            const response = await fetch(
+                "https://job-portal-1-5gno.onrender.com/api/applications/user/"
+                + applicationUser.id
+            );
+
+
+            const data = await response.json();
+
+
+            console.log(
+                "Applications:",
+                data
+            );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.message ||
+                    "Unable to load applications"
+                );
+
+            }
+
+
+            const applications =
+                data.applications || [];
+
+
+            const content =
+                document.getElementById(
+                    "myApplicationsContent"
+                );
+
+
+            if (applications.length === 0) {
+
+                content.innerHTML = `
+                    <div style="
+                        text-align:center;
+                        padding:50px 20px;
+                    ">
+
+                        <div style="
+                            font-size:45px;
+                            margin-bottom:15px;
+                        ">
+                            📄
+                        </div>
+
+                        <h3>
+                            No applications yet
+                        </h3>
+
+                        <p style="color:#777;">
+                            Apply for a job and your
+                            application will appear here.
+                        </p>
+
+                    </div>
+                `;
+
+                return;
+            }
+
+
+            content.innerHTML =
+                applications.map(function (application) {
+
+                    const job =
+                        application.job || {};
+
+
+                    const appliedDate =
+                        application.appliedAt
+                            ? new Date(
+                                application.appliedAt
+                              ).toLocaleDateString()
+                            : "N/A";
+
+
+                    return `
+                        <div style="
+                            border:1px solid #e5e7eb;
+                            border-radius:14px;
+                            padding:20px;
+                            margin-bottom:15px;
+                            display:flex;
+                            justify-content:space-between;
+                            align-items:center;
+                            gap:20px;
+                        ">
+
+                            <div>
+
+                                <h3 style="
+                                    margin:0 0 8px;
+                                    color:#222;
+                                ">
+                                    ${job.title || "Job"}
+                                </h3>
+
+                                <p style="
+                                    margin:0 0 7px;
+                                    font-weight:600;
+                                ">
+                                    ${job.company || "Company"}
+                                </p>
+
+                                <p style="
+                                    margin:0;
+                                    color:#777;
+                                ">
+                                    📍 ${job.location || "Location not available"}
+                                </p>
+
+                            </div>
+
+
+                            <div style="
+                                text-align:right;
+                                min-width:130px;
+                            ">
+
+                                <span style="
+                                    display:inline-block;
+                                    padding:7px 13px;
+                                    border-radius:20px;
+                                    background:#eef4ff;
+                                    color:#1769ff;
+                                    font-size:13px;
+                                    font-weight:600;
+                                ">
+                                    ${application.status || "Applied"}
+                                </span>
+
+                                <p style="
+                                    margin:9px 0 0;
+                                    color:#777;
+                                    font-size:12px;
+                                ">
+                                    Applied: ${appliedDate}
+                                </p>
+
+                            </div>
+
+                        </div>
+                    `;
+
+                }).join("");
+
+
+        } catch (error) {
+
+            console.error(
+                "Applications loading error:",
+                error
+            );
+
+
+            document.getElementById(
+                "myApplicationsContent"
+            ).innerHTML = `
+                <div style="
+                    text-align:center;
+                    padding:40px;
+                    color:#dc3545;
+                ">
+
+                    <h3>
+                        Unable to load applications
+                    </h3>
+
+                    <p>
+                        Please try again.
+                    </p>
+
+                </div>
+            `;
+
+        }
+
+    }, true);
+
+
+})();
+</script>
     <script src="dashboard.js"></script>
-<script src="profile.js"></script>
+
 
 
 <script>
@@ -813,6 +1215,8 @@
     }
 
 </script>
+
+
 
 
 </body>
