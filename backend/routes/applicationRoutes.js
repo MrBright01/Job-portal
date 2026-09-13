@@ -1,13 +1,12 @@
 const express = require("express");
 const router = express.Router();
 
-const Application =
-    require("../models/Application");
+const Application = require("../models/Application");
 
 
-// =====================================
-// APPLY FOR A JOB
-// =====================================
+// =========================================
+// APPLY FOR JOB
+// =========================================
 
 router.post("/", async (req, res) => {
 
@@ -18,11 +17,6 @@ router.post("/", async (req, res) => {
             applicantId
         } = req.body;
 
-
-        // ===============================
-        // VALIDATE
-        // ===============================
-
         if (!jobId || !applicantId) {
 
             return res.status(400).json({
@@ -32,17 +26,11 @@ router.post("/", async (req, res) => {
 
         }
 
-
-        // ===============================
-        // CHECK DUPLICATE
-        // ===============================
-
         const existingApplication =
             await Application.findOne({
                 job: jobId,
                 applicant: applicantId
             });
-
 
         if (existingApplication) {
 
@@ -53,27 +41,22 @@ router.post("/", async (req, res) => {
 
         }
 
-
-        // ===============================
-        // CREATE APPLICATION
-        // ===============================
-
         const application =
             new Application({
                 job: jobId,
                 applicant: applicantId
             });
 
-
         await application.save();
 
-
         res.status(201).json({
+
             message:
                 "Application submitted successfully",
-            application
-        });
 
+            application
+
+        });
 
     } catch (error) {
 
@@ -81,9 +64,6 @@ router.post("/", async (req, res) => {
             "Application error:",
             error
         );
-
-
-        // Duplicate index protection
 
         if (error.code === 11000) {
 
@@ -93,7 +73,6 @@ router.post("/", async (req, res) => {
             });
 
         }
-
 
         res.status(500).json({
             message:
@@ -105,9 +84,9 @@ router.post("/", async (req, res) => {
 });
 
 
-// =====================================
+// =========================================
 // GET USER APPLICATIONS
-// =====================================
+// =========================================
 
 router.get(
     "/user/:userId",
@@ -121,18 +100,14 @@ router.get(
                         applicant:
                             req.params.userId
                     })
-                    .populate(
-                        "job"
-                    )
+                    .populate("job")
                     .sort({
                         createdAt: -1
                     });
 
-
             res.json({
                 applications
             });
-
 
         } catch (error) {
 
@@ -140,7 +115,6 @@ router.get(
                 "Get user applications error:",
                 error
             );
-
 
             res.status(500).json({
                 message:
@@ -153,9 +127,9 @@ router.get(
 );
 
 
-// =====================================
+// =========================================
 // GET APPLICANTS FOR A JOB
-// =====================================
+// =========================================
 
 router.get(
     "/job/:jobId",
@@ -181,11 +155,9 @@ router.get(
                         createdAt: -1
                     });
 
-
             res.json({
                 applications
             });
-
 
         } catch (error) {
 
@@ -193,7 +165,6 @@ router.get(
                 "Get applicants error:",
                 error
             );
-
 
             res.status(500).json({
                 message:
@@ -205,64 +176,110 @@ router.get(
     }
 );
 
+
 // =========================================
 // UPDATE APPLICATION STATUS
 // =========================================
 
-router.put("/:applicationId/status", async (req, res) => {
-    try {
+router.put(
+    "/:applicationId/status",
+    async (req, res) => {
 
-        const { status } = req.body;
+        try {
 
-        const allowedStatuses = [
-            "Applied",
-            "Shortlisted",
-            "Accepted",
-            "Rejected"
-        ];
+            const {
+                status
+            } = req.body;
 
-        if (!allowedStatuses.includes(status)) {
-            return res.status(400).json({
-                message: "Invalid application status"
+
+            // Allowed statuses
+            const allowedStatuses = [
+                "Applied",
+                "Shortlisted",
+                "Accepted",
+                "Rejected"
+            ];
+
+
+            // Check status
+            if (
+                !allowedStatuses.includes(status)
+            ) {
+
+                return res.status(400).json({
+
+                    message:
+                        "Invalid application status"
+
+                });
+
+            }
+
+
+            // Find and update application
+            const application =
+                await Application.findByIdAndUpdate(
+
+                    req.params.applicationId,
+
+                    {
+                        status: status
+                    },
+
+                    {
+                        new: true,
+                        runValidators: true
+                    }
+
+                );
+
+
+            // Application doesn't exist
+            if (!application) {
+
+                return res.status(404).json({
+
+                    message:
+                        "Application not found"
+
+                });
+
+            }
+
+
+            // Success
+            res.status(200).json({
+
+                message:
+                    `Application ${status.toLowerCase()} successfully`,
+
+                application:
+                    application
+
             });
-        }
 
-        const application =
-            await Application.findByIdAndUpdate(
-                req.params.applicationId,
-                {
-                    status: status
-                },
-                {
-                    new: true
-                }
+        } catch (error) {
+
+            console.error(
+                "Update application status error:",
+                error
             );
 
-        if (!application) {
-            return res.status(404).json({
-                message: "Application not found"
+
+            res.status(500).json({
+
+                message:
+                    "Failed to update application status",
+
+                error:
+                    error.message
+
             });
+
         }
 
-        res.status(200).json({
-            message:
-                `Application ${status.toLowerCase()} successfully`,
-            application: application
-        });
-
-    } catch (error) {
-
-        console.error(
-            "Update application status error:",
-            error
-        );
-
-        res.status(500).json({
-            message:
-                "Failed to update application status",
-            error: error.message
-        });
     }
-});
+);
+
 
 module.exports = router;
