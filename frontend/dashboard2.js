@@ -973,6 +973,7 @@ async function openApplicants(jobId) {
 
                             </div>
 
+                            
                             <div class="application-status">
 
                                 <span class="status-badge">
@@ -988,8 +989,29 @@ async function openApplicants(jobId) {
 
                             </div>
 
+<button
+    class="shortlist-btn"
+    data-id="${application._id}"
+>
+    Shortlist
+</button>
+
+<button
+    class="accept-btn"
+    data-id="${application._id}"
+>
+    Accept
+</button>
+
+<button
+    class="reject-btn"
+    data-id="${application._id}"
+>
+    Reject
+</button>
                         </div>
                     `;
+                    
 
                 }).join("")}
 
