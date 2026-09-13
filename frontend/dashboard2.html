@@ -276,10 +276,7 @@
                             <option value="Internship">
                                 Internship
                             </option>
-                            
-                            <option value="Contract">
-    Contract
-</option>
+
                         </select>
 
                     </div>
@@ -381,46 +378,7 @@
 
         </section>
 
-        <!-- =========================
-     APPLICANTS SECTION
-========================== -->
-
-<section
-    class="applicants-section"
-    id="applicants"
->
-
-    <div class="section-header">
-
-        <div>
-
-            <h2>
-                Job Applicants
-            </h2>
-
-            <p>
-                Review candidates who have applied
-                to your jobs.
-            </p>
-
-        </div>
-
-    </div>
-
-
-    <div
-        id="applicantsContainer"
-        class="applicants-container"
-    >
-
-        <p class="loading">
-            Select "View Applicants" from a job
-            posting to see candidates.
-        </p>
-
-    </div>
-
-</section>
+        
 
 
         <!-- POSTED JOBS -->
@@ -463,8 +421,57 @@
             </div>
 
         </section>
+        <!-- ==============================
+     JOB APPLICANTS
+================================ -->
+
+<section
+    class="applicants-section"
+    id="applicants"
+>
+
+    <div class="section-header">
+
+        <div>
+            <h2>Job Applicants</h2>
+
+            <p>
+                Review and manage candidates
+                who applied to your jobs.
+            </p>
+        </div>
+
+    </div>
+
+
+    <!-- Applicants will be inserted here -->
+    <div
+        id="applicantsContainer"
+        class="applicants-container"
+    >
+
+        <div class="applicants-empty">
+
+            <div class="empty-icon">
+                👥
+            </div>
+
+            <h3>No Job Selected</h3>
+
+            <p>
+                Click <strong>View Applicants</strong>
+                on one of your posted jobs to see
+                candidates here.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
 
     </main>
+    
 
 
     <script src="dashboard2.js"></script>

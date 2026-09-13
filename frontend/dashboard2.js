@@ -955,5 +955,131 @@ async function openApplicants(jobId) {
                 </p>
             </div>
         `;
+        // =========================================
+// APPLICANT ACTION BUTTONS
+// =========================================
+
+applicantsContainer
+    .querySelectorAll(".shortlist-btn")
+    .forEach(button => {
+
+        button.addEventListener(
+            "click",
+            function () {
+
+                updateApplicationStatus(
+                    this.dataset.id,
+                    "Shortlisted",
+                    jobId
+                );
+
+            }
+        );
+
+    });
+
+
+applicantsContainer
+    .querySelectorAll(".accept-btn")
+    .forEach(button => {
+
+        button.addEventListener(
+            "click",
+            function () {
+
+                updateApplicationStatus(
+                    this.dataset.id,
+                    "Accepted",
+                    jobId
+                );
+
+            }
+        );
+
+    });
+
+
+applicantsContainer
+    .querySelectorAll(".reject-btn")
+    .forEach(button => {
+
+        button.addEventListener(
+            "click",
+            function () {
+
+                updateApplicationStatus(
+                    this.dataset.id,
+                    "Rejected",
+                    jobId
+                );
+
+            }
+        );
+
+    });
+    }
+}
+
+// =========================================
+// UPDATE APPLICATION STATUS
+// =========================================
+
+async function updateApplicationStatus(
+    applicationId,
+    status,
+    jobId
+) {
+
+    const confirmAction = confirm(
+        `Are you sure you want to mark this application as ${status}?`
+    );
+
+    if (!confirmAction) {
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            `https://job-portal-1-5gno.onrender.com/api/applications/${applicationId}/status`,
+            {
+                method: "PUT",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    status: status
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                data.message ||
+                "Failed to update application"
+            );
+        }
+
+        alert(
+            `Application marked as ${status}`
+        );
+
+        // Reload applicants
+        openApplicants(jobId);
+
+    } catch (error) {
+
+        console.error(
+            "Status update error:",
+            error
+        );
+
+        alert(
+            "Failed to update application status."
+        );
     }
 }
