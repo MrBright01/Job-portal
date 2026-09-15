@@ -1,63 +1,220 @@
-const mongoose = require("mongoose");
 const express = require("express");
+
 const router = express.Router();
 
 const Application =
     require("../models/Application");
 
-const applicationSchema = new mongoose.Schema(
-    {
-        job: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Job",
-            required: true
-        },
-        applicant: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "User",
-            required: true
-        },
 
-        status: {
-            type: String,
+// =========================================
+// APPLY FOR JOB
+// =========================================
 
-            enum: [
-                "Applied",
-                "Shortlisted",
-                "Accepted",
-                "Rejected"
-            ],
+router.post("/", async (req, res) => {
 
-            default: "Applied"
+    try {
+
+        const {
+            jobId,
+            applicantId
+        } = req.body;
+
+
+        if (!jobId || !applicantId) {
+
+            return res.status(400).json({
+                message:
+                    "Job ID and applicant ID are required"
+            });
+
         }
-    },
 
-    {
-        timestamps: true
+
+        // Check if already applied
+        const existingApplication =
+            await Application.findOne({
+                job: jobId,
+                applicant: applicantId
+            });
+
+
+        if (existingApplication) {
+
+            return res.status(400).json({
+                message:
+                    "You have already applied for this job"
+            });
+
+        }
+
+
+        // Create application
+        const application =
+            new Application({
+                job: jobId,
+                applicant: applicantId
+            });
+
+
+        await application.save();
+
+
+        res.status(201).json({
+
+            message:
+                "Application submitted successfully",
+
+            application
+
+        });
+
+
+    } catch (error) {
+
+        console.error(
+            "Application error:",
+            error
+        );
+
+
+        if (error.code === 11000) {
+
+            return res.status(400).json({
+                message:
+                    "You have already applied for this job"
+            });
+
+        }
+
+
+        res.status(500).json({
+
+            message:
+                "Server error",
+
+            error:
+                error.message
+
+        });
+
+    }
+
+});
+
+
+// =========================================
+// GET USER APPLICATIONS
+// =========================================
+
+router.get(
+    "/user/:userId",
+    async (req, res) => {
+
+        try {
+
+            const applications =
+                await Application
+                    .find({
+                        applicant:
+                            req.params.userId
+                    })
+                    .populate("job")
+                    .sort({
+                        createdAt: -1
+                    });
+
+
+            res.status(200).json({
+                applications
+            });
+
+
+        } catch (error) {
+
+            console.error(
+                "Get user applications error:",
+                error
+            );
+
+
+            res.status(500).json({
+
+                message:
+                    "Server error",
+
+                error:
+                    error.message
+
+            });
+
+        }
+
     }
 );
 
 
-// Prevent duplicate applications
-applicationSchema.index(
-    {
-        job: 1,
-        applicant: 1
-    },
+// =========================================
+// GET APPLICANTS FOR A JOB
+// =========================================
 
-    {
-        unique: true
+router.get(
+    "/job/:jobId",
+    async (req, res) => {
+
+        try {
+
+            const applications =
+                await Application
+                    .find({
+                        job:
+                            req.params.jobId
+                    })
+
+                    .populate(
+                        "applicant",
+                        "name email phone location education skills experience about profilePhoto"
+                    )
+
+                    .populate(
+                        "job",
+                        "title company location salary jobType"
+                    )
+
+                    .sort({
+                        createdAt: -1
+                    });
+
+
+            res.status(200).json({
+                applications
+            });
+
+
+        } catch (error) {
+
+            console.error(
+                "Get applicants error:",
+                error
+            );
+
+
+            res.status(500).json({
+
+                message:
+                    "Server error",
+
+                error:
+                    error.message
+
+            });
+
+        }
+
     }
 );
 
 
-module.exports =
-    mongoose.model(
-        "Application",
-        applicationSchema
-    );
-
-    // =========================================
+// =========================================
 // UPDATE APPLICATION STATUS
 // =========================================
 
@@ -67,7 +224,10 @@ router.put(
 
         try {
 
-            const { status } = req.body;
+            const {
+                status
+            } = req.body;
+
 
             const allowedStatuses = [
                 "Applied",
@@ -76,42 +236,64 @@ router.put(
                 "Rejected"
             ];
 
-            if (!allowedStatuses.includes(status)) {
+
+            // Validate status
+            if (
+                !allowedStatuses.includes(status)
+            ) {
 
                 return res.status(400).json({
+
                     message:
                         "Invalid application status"
+
                 });
 
             }
 
+
+            // Update application
             const application =
                 await Application.findByIdAndUpdate(
+
                     req.params.applicationId,
+
                     {
                         status: status
                     },
+
                     {
                         new: true,
                         runValidators: true
                     }
+
                 );
 
+
+            // Application not found
             if (!application) {
 
                 return res.status(404).json({
+
                     message:
                         "Application not found"
+
                 });
 
             }
 
+
+            // Success
             res.status(200).json({
+
                 message:
                     `Application ${status.toLowerCase()} successfully`,
+
                 application:
                     application
+
             });
+
 
         } catch (error) {
 
@@ -120,14 +302,25 @@ router.put(
                 error
             );
 
+
             res.status(500).json({
+
                 message:
                     "Failed to update application status",
+
                 error:
                     error.message
+
             });
 
         }
 
     }
 );
+
+
+// =========================================
+// EXPORT ROUTER
+// =========================================
+
+module.exports = router;
