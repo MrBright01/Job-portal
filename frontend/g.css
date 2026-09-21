@@ -4462,3 +4462,44 @@ header {
     padding: 60px 20px;
     color: #777;
 }
+/* ==============================
+   RESUME UPLOAD - A RANK STYLE
+   ============================== */
+
+.resume-upload {
+    margin: 20px 0;
+}
+
+.resume-upload label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.resume-upload input[type="file"] {
+    width: 100%;
+    padding: 12px;
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    background: #fafafa;
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.resume-upload input[type="file"]:hover {
+    border-color: #555;
+    background: #f5f5f5;
+}
+
+.resume-upload input[type="file"]:focus {
+    outline: none;
+    border-color: #333;
+}
+
+.resume-hint {
+    margin-top: 6px;
+    font-size: 12px;
+    color: #777;
+}

@@ -21,6 +21,24 @@ const applicationSchema = new mongoose.Schema(
             required: true
         },
 
+        // Resume submitted with this application
+        resume: {
+            fileName: {
+                type: String,
+                required: true
+            },
+
+            fileUrl: {
+                type: String,
+                required: true
+            },
+
+            uploadedAt: {
+                type: Date,
+                default: Date.now
+            }
+        },
+
         // Application status
         status: {
             type: String,

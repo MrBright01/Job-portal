@@ -663,7 +663,6 @@ if (closeModal) {
     );
 
 }
-
 // ==============================
 // APPLY FORM
 // ==============================
@@ -678,24 +677,87 @@ if (applyForm) {
 
             try {
 
-                const response = await fetch(
-                    `${API_BASE}/applications`,
-                    {
-                        method: "POST",
+                const resumeInput =
+                    document.getElementById("resume");
 
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
+                if (!resumeInput || !resumeInput.files[0]) {
 
-                        body: JSON.stringify({
-                            jobId: selectedJobId,
-                            applicantId: loggedInUser.id
-                        })
-                    }
+                    alert(
+                        "Please select your resume PDF."
+                    );
+
+                    return;
+                }
+
+
+                const resumeFile =
+                    resumeInput.files[0];
+
+
+                // Check PDF
+                if (
+                    resumeFile.type !==
+                    "application/pdf"
+                ) {
+
+                    alert(
+                        "Only PDF resumes are allowed."
+                    );
+
+                    return;
+                }
+
+
+                // Check 5 MB limit
+                if (
+                    resumeFile.size >
+                    5 * 1024 * 1024
+                ) {
+
+                    alert(
+                        "Resume must be smaller than 5 MB."
+                    );
+
+                    return;
+                }
+
+
+                // Create FormData
+                const formData =
+                    new FormData();
+
+
+                formData.append(
+                    "jobId",
+                    selectedJobId
                 );
 
 
-                const data = await response.json();
+                formData.append(
+                    "applicantId",
+                    loggedInUser.id
+                );
+
+
+                formData.append(
+                    "resume",
+                    resumeFile
+                );
+
+
+                const response =
+                    await fetch(
+                        `${API_BASE}/applications`,
+                        {
+                            method: "POST",
+
+                            body: formData
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
 
 
                 if (!response.ok) {

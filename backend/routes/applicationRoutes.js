@@ -1,105 +1,218 @@
 const express = require("express");
-
 const router = express.Router();
 
-const Application =
-    require("../models/Application");
+const Application = require("../models/Application");
+const upload = require("../config/upload");
+const cloudinary = require("../config/cloudinary");
 
 
 // =========================================
-// APPLY FOR JOB
+// APPLY FOR JOB + UPLOAD RESUME
 // =========================================
 
-router.post("/", async (req, res) => {
+router.post(
+    "/",
+    upload.single("resume"),
+    async (req, res) => {
 
-    try {
+        try {
 
-        const {
-            jobId,
-            applicantId
-        } = req.body;
+            const {
+                jobId,
+                applicantId
+            } = req.body;
 
 
-        if (!jobId || !applicantId) {
+            // ==============================
+            // VALIDATE BASIC DATA
+            // ==============================
 
-            return res.status(400).json({
+            if (!jobId || !applicantId) {
+
+                return res.status(400).json({
+                    message:
+                        "Job ID and applicant ID are required"
+                });
+
+            }
+
+
+            // ==============================
+            // VALIDATE RESUME
+            // ==============================
+
+            if (!req.file) {
+
+                return res.status(400).json({
+                    message:
+                        "Resume PDF is required"
+                });
+
+            }
+
+
+            // ==============================
+            // CHECK DUPLICATE APPLICATION
+            // ==============================
+
+            const existingApplication =
+                await Application.findOne({
+                    job: jobId,
+                    applicant: applicantId
+                });
+
+
+            if (existingApplication) {
+
+                return res.status(400).json({
+                    message:
+                        "You have already applied for this job"
+                });
+
+            }
+
+
+            // ==============================
+            // UPLOAD PDF TO CLOUDINARY
+            // ==============================
+
+            const uploadResult =
+                await new Promise(
+                    (resolve, reject) => {
+
+                        const stream =
+                            cloudinary.uploader.upload_stream(
+                                {
+                                    folder:
+                                        "job-portal/resumes",
+                                    resource_type:
+                                        "raw"
+                                },
+
+                                (error, result) => {
+
+                                    if (error) {
+                                        reject(error);
+                                    } else {
+                                        resolve(result);
+                                    }
+
+                                }
+                            );
+
+                        stream.end(
+                            req.file.buffer
+                        );
+
+                    }
+                );
+
+
+            // ==============================
+            // CREATE APPLICATION
+            // ==============================
+
+            const application =
+                new Application({
+
+                    job: jobId,
+
+                    applicant: applicantId,
+
+                    resume: {
+
+                        fileName:
+                            req.file.originalname,
+
+                        fileUrl:
+                            uploadResult.secure_url,
+
+                        uploadedAt:
+                            new Date()
+
+                    }
+
+                });
+
+
+            await application.save();
+
+
+            // ==============================
+            // SUCCESS
+            // ==============================
+
+            res.status(201).json({
+
                 message:
-                    "Job ID and applicant ID are required"
+                    "Application submitted successfully",
+
+                application
+
+            });
+
+
+        } catch (error) {
+
+            console.error(
+                "Application error:",
+                error
+            );
+
+
+            // ==============================
+            // DUPLICATE APPLICATION
+            // ==============================
+
+            if (error.code === 11000) {
+
+                return res.status(400).json({
+
+                    message:
+                        "You have already applied for this job"
+
+                });
+
+            }
+
+
+            // ==============================
+            // MULTER ERROR
+            // ==============================
+
+            if (
+                error.message ===
+                "Only PDF resumes are allowed"
+            ) {
+
+                return res.status(400).json({
+
+                    message:
+                        "Only PDF resumes are allowed"
+
+                });
+
+            }
+
+
+            // ==============================
+            // SERVER ERROR
+            // ==============================
+
+            res.status(500).json({
+
+                message:
+                    "Server error",
+
+                error:
+                    error.message
+
             });
 
         }
-
-
-        // Check if already applied
-        const existingApplication =
-            await Application.findOne({
-                job: jobId,
-                applicant: applicantId
-            });
-
-
-        if (existingApplication) {
-
-            return res.status(400).json({
-                message:
-                    "You have already applied for this job"
-            });
-
-        }
-
-
-        // Create application
-        const application =
-            new Application({
-                job: jobId,
-                applicant: applicantId
-            });
-
-
-        await application.save();
-
-
-        res.status(201).json({
-
-            message:
-                "Application submitted successfully",
-
-            application
-
-        });
-
-
-    } catch (error) {
-
-        console.error(
-            "Application error:",
-            error
-        );
-
-
-        if (error.code === 11000) {
-
-            return res.status(400).json({
-                message:
-                    "You have already applied for this job"
-            });
-
-        }
-
-
-        res.status(500).json({
-
-            message:
-                "Server error",
-
-            error:
-                error.message
-
-        });
 
     }
-
-});
+);
 
 
 // =========================================
@@ -169,17 +282,14 @@ router.get(
                         job:
                             req.params.jobId
                     })
-
                     .populate(
                         "applicant",
                         "name email phone location education skills experience about profilePhoto"
                     )
-
                     .populate(
                         "job",
                         "title company location salary jobType"
                     )
-
                     .sort({
                         createdAt: -1
                     });
@@ -237,7 +347,6 @@ router.put(
             ];
 
 
-            // Validate status
             if (
                 !allowedStatuses.includes(status)
             ) {
@@ -252,7 +361,6 @@ router.put(
             }
 
 
-            // Update application
             const application =
                 await Application.findByIdAndUpdate(
 
@@ -270,7 +378,6 @@ router.put(
                 );
 
 
-            // Application not found
             if (!application) {
 
                 return res.status(404).json({
@@ -283,14 +390,12 @@ router.put(
             }
 
 
-            // Success
             res.status(200).json({
 
                 message:
                     `Application ${status.toLowerCase()} successfully`,
 
-                application:
-                    application
+                application
 
             });
 
