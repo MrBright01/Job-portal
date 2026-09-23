@@ -4,7 +4,8 @@ const router = express.Router();
 const Application = require("../models/Application");
 const upload = require("../config/upload");
 const cloudinary = require("../config/cloudinary");
-
+const Notification =
+    require("../models/Notification");
 
 // =========================================
 // APPLY FOR JOB + UPLOAD RESUME
@@ -139,7 +140,7 @@ router.post(
 
 
             // ==============================
-            // SUCCESS
+            // SUCCESS''
             // ==============================
 
             res.status(201).json({
@@ -323,106 +324,143 @@ router.get(
     }
 );
 
-
-// =========================================
+// ==============================
 // UPDATE APPLICATION STATUS
-// =========================================
+// ==============================
 
-router.put(
-    "/:applicationId/status",
-    async (req, res) => {
+router.put("/:applicationId/status", async (req, res) => {
 
-        try {
+    try {
 
-            const {
-                status
-            } = req.body;
+        const { status } = req.body;
 
+        const allowedStatuses = [
+            "Applied",
+            "Shortlisted",
+            "Accepted",
+            "Rejected"
+        ];
 
-            const allowedStatuses = [
-                "Applied",
-                "Shortlisted",
-                "Accepted",
-                "Rejected"
-            ];
+        if (!allowedStatuses.includes(status)) {
 
+            return res.status(400).json({
+                message: "Invalid application status"
+            });
 
-            if (
-                !allowedStatuses.includes(status)
-            ) {
-
-                return res.status(400).json({
-
-                    message:
-                        "Invalid application status"
-
-                });
-
-            }
+        }
 
 
-            const application =
-                await Application.findByIdAndUpdate(
-
+        const application =
+            await Application
+                .findByIdAndUpdate(
                     req.params.applicationId,
-
                     {
                         status: status
                     },
-
                     {
                         new: true,
                         runValidators: true
                     }
-
-                );
-
-
-            if (!application) {
-
-                return res.status(404).json({
-
-                    message:
-                        "Application not found"
-
-                });
-
-            }
+                )
+                .populate("job", "title");
 
 
-            res.status(200).json({
+        if (!application) {
 
-                message:
-                    `Application ${status.toLowerCase()} successfully`,
-
-                application
-
+            return res.status(404).json({
+                message: "Application not found"
             });
 
-
-        } catch (error) {
-
-            console.error(
-                "Update application status error:",
-                error
-            );
+        }
 
 
-            res.status(500).json({
+        // ==============================
+        // CREATE NOTIFICATION
+        // ==============================
 
-                message:
-                    "Failed to update application status",
+        let title = "";
+        let message = "";
 
-                error:
-                    error.message
+
+        if (status === "Shortlisted") {
+
+            title = "Application Shortlisted 🎉";
+
+            message =
+                `Your application for ${application.job?.title || "this job"} has been shortlisted.`;
+
+        }
+
+
+        else if (status === "Accepted") {
+
+            title = "Application Accepted 🎉";
+
+            message =
+                `Congratulations! Your application for ${application.job?.title || "this job"} has been accepted.`;
+
+        }
+
+
+        else if (status === "Rejected") {
+
+            title = "Application Update";
+
+            message =
+                `Your application for ${application.job?.title || "this job"} was rejected.`;
+
+        }
+
+
+        // Don't create a notification for "Applied"
+        if (title && message) {
+
+            await Notification.create({
+
+                user: application.applicant,
+
+                application: application._id,
+
+                title: title,
+
+                message: message,
+
+                type: "Application"
 
             });
 
         }
 
-    }
-);
 
+        res.status(200).json({
+
+            message:
+                `Application ${status.toLowerCase()} successfully`,
+
+            application
+
+        });
+
+
+    } catch (error) {
+
+        console.error(
+            "Update application status error:",
+            error
+        );
+
+        res.status(500).json({
+
+            message:
+                "Failed to update application status",
+
+            error: error.message
+
+        });
+
+    }
+
+});
 
 // =========================================
 // EXPORT ROUTER

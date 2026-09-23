@@ -1496,3 +1496,75 @@ loadProfile();
     }
 
 })();
+
+// ==============================
+// NOTIFICATION UI
+// ==============================
+
+const notificationBtn =
+    document.getElementById("notificationBtn");
+
+const notificationPanel =
+    document.getElementById("notificationPanel");
+
+const markAllRead =
+    document.getElementById("markAllRead");
+
+const notificationBadge =
+    document.getElementById("notificationBadge");
+
+
+// OPEN / CLOSE NOTIFICATIONS
+
+if (notificationBtn) {
+
+    notificationBtn.addEventListener("click", function (event) {
+
+        event.stopPropagation();
+
+        notificationPanel.classList.toggle("show");
+
+    });
+
+}
+
+
+// CLOSE WHEN CLICKING OUTSIDE
+
+document.addEventListener("click", function (event) {
+
+    if (
+        notificationPanel &&
+        !notificationPanel.contains(event.target) &&
+        !notificationBtn.contains(event.target)
+    ) {
+
+        notificationPanel.classList.remove("show");
+
+    }
+
+});
+
+
+// MARK ALL AS READ
+
+if (markAllRead) {
+
+    markAllRead.addEventListener("click", function () {
+
+        const unreadNotifications =
+            document.querySelectorAll(".notification.unread");
+
+        unreadNotifications.forEach(function (notification) {
+
+            notification.classList.remove("unread");
+
+        });
+
+        notificationBadge.textContent = "0";
+
+        notificationBadge.style.display = "none";
+
+    });
+
+}
