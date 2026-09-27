@@ -991,3 +991,101 @@ body {
     }
 
 }
+
+/* =========================================
+   EMPLOYER PROFILE MODAL
+========================================= */
+
+.profile-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+}
+
+.profile-modal.show {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(3px);
+}
+
+.profile-modal-content {
+    position: relative;
+    z-index: 1;
+
+    width: 90%;
+    max-width: 720px;
+    max-height: 90vh;
+
+    overflow-y: auto;
+
+    background: #ffffff;
+    border-radius: 18px;
+
+    padding: 25px;
+
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+}
+
+.profile-modal-content .profile-card {
+    box-shadow: none;
+    border: none;
+    padding: 10px;
+    margin: 0;
+}
+
+.profile-close-btn {
+    position: absolute;
+
+    top: 15px;
+    right: 18px;
+
+    width: 36px;
+    height: 36px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: #f3f4f6;
+    color: #374151;
+
+    font-size: 18px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    z-index: 5;
+}
+
+.profile-close-btn:hover {
+    background: #e5e7eb;
+}
+
+body.profile-modal-open {
+    overflow: hidden;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 768px) {
+
+    .profile-modal-content {
+        width: 94%;
+        max-height: 92vh;
+        padding: 18px;
+        border-radius: 14px;
+    }
+
+    .profile-modal-content .profile-card {
+        padding: 5px;
+    }
+
+}

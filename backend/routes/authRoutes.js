@@ -193,7 +193,8 @@ router.put("/profile/:id", async (req, res) => {
             education,
             skills,
             experience,
-            about
+            about,
+            company
         } = req.body;
 
         const user = await User.findById(req.params.id);
@@ -233,6 +234,9 @@ router.put("/profile/:id", async (req, res) => {
 
         if (about !== undefined) {
             user.about = about.trim();
+        }
+        if (company !== undefined) {
+            user.company = company.trim();
         }
 
         await user.save();

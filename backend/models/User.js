@@ -66,7 +66,11 @@ const userSchema = new mongoose.Schema(
             trim: true,
             default: ""
         },
-
+        company: {
+            type: String,
+            trim: true,
+            default: ""
+        },
         profilePhoto: {
             type: String,
             default: ""
