@@ -883,8 +883,6 @@ async function openApplicants(jobId) {
 
             return;
         }
-
-
         // ==============================
         // DISPLAY APPLICANTS
         // ==============================
@@ -1230,6 +1228,645 @@ if (markAllRead) {
         notificationBadge.style.display = "none";
 
     });
+}
+// ==============================
+// EMPLOYER PROFILE MODAL
+// ==============================
 
+const userButton =
+    document.getElementById("userButton");
+
+const userDropdown =
+    document.getElementById("userDropdown");
+
+const profileBtn =
+    document.getElementById("profileBtn");
+
+const profileModal =
+    document.getElementById("employerProfile");
+
+const profileModalOverlay =
+    document.getElementById("profileModalOverlay");
+
+const closeProfileModal =
+    document.getElementById("closeProfileModal");
+
+const editProfileBtn =
+    document.getElementById("editProfileBtn");
+
+const editProfileForm =
+    document.getElementById("editProfileForm");
+
+const cancelEditProfile =
+    document.getElementById("cancelEditProfile");
+
+
+// ==============================
+// PROFILE ELEMENTS
+// ==============================
+
+const profileName =
+    document.getElementById("profileName");
+
+const profileFullName =
+    document.getElementById("profileFullName");
+
+const profileEmail =
+    document.getElementById("profileEmail");
+
+const profilePhone =
+    document.getElementById("profilePhone");
+
+const profileLocation =
+    document.getElementById("profileLocation");
+
+const profileCompany =
+    document.getElementById("profileCompany");
+
+const profileAbout =
+    document.getElementById("profileAbout");
+
+
+// ==============================
+// EDIT FORM ELEMENTS
+// ==============================
+
+const editProfileName =
+    document.getElementById("editProfileName");
+
+const editProfileEmail =
+    document.getElementById("editProfileEmail");
+
+const editProfilePhone =
+    document.getElementById("editProfilePhone");
+
+const editProfileLocation =
+    document.getElementById("editProfileLocation");
+
+const editCompanyName =
+    document.getElementById("editCompanyName");
+
+const editAbout =
+    document.getElementById("editAbout");
+
+
+// ==============================
+// LOAD PROFILE FROM SERVER
+// ==============================
+
+async function loadEmployerProfile() {
+
+    if (!loggedInUser || !loggedInUser.id) {
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            `https://job-portal-1-5gno.onrender.com/api/auth/profile/${loggedInUser.id}`
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                data.message || "Failed to load profile"
+            );
+        }
+
+        const user = data.user;
+
+        // Update local logged-in user
+        Object.assign(loggedInUser, {
+            id: user._id || user.id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            phone: user.phone || "",
+            location: user.location || "",
+            company: user.company || "",
+            education: user.education || "",
+            skills: user.skills || [],
+            experience: user.experience || "",
+            about: user.about || "",
+            profilePhoto: user.profilePhoto || ""
+        });
+
+        localStorage.setItem(
+            "loggedInUser",
+            JSON.stringify(loggedInUser)
+        );
+
+
+        // ==============================
+        // DISPLAY PROFILE
+        // ==============================
+
+        profileName.textContent =
+            user.name || "Employer";
+
+        profileFullName.textContent =
+            user.name || "Not provided";
+
+        profileEmail.textContent =
+            user.email || "Not provided";
+
+        profilePhone.textContent =
+            user.phone || "Not provided";
+
+        profileLocation.textContent =
+            user.location || "Not provided";
+
+        profileCompany.textContent =
+            user.company || "Not provided";
+
+        profileAbout.textContent =
+            user.about ||
+            "No information added yet.";
+
+
+    } catch (error) {
+
+        console.error(
+            "LOAD PROFILE ERROR:",
+            error
+        );
+
+        alert(
+            "Unable to load your profile. Please try again."
+        );
+    }
+}
+
+
+// ==============================
+// OPEN USER DROPDOWN
+// ==============================
+
+if (userButton && userDropdown) {
+
+    userButton.addEventListener(
+        "click",
+        function (event) {
+
+            event.stopPropagation();
+
+            userDropdown.classList.toggle(
+                "show"
+            );
+
+        }
+    );
+
+}
+
+
+// ==============================
+// CLOSE USER DROPDOWN
+// ==============================
+
+document.addEventListener(
+    "click",
+    function (event) {
+
+        if (
+            userDropdown &&
+            userButton &&
+            !userDropdown.contains(event.target) &&
+            !userButton.contains(event.target)
+        ) {
+
+            userDropdown.classList.remove(
+                "show"
+            );
+
+        }
+
+    }
+);
+
+
+// ==============================
+// OPEN MY PROFILE MODAL
+// ==============================
+
+if (profileBtn) {
+
+    profileBtn.addEventListener(
+        "click",
+        async function () {
+
+            // Close dropdown
+            if (userDropdown) {
+
+                userDropdown.classList.remove(
+                    "show"
+                );
+
+            }
+
+            // Open modal
+            if (profileModal) {
+
+                profileModal.classList.add(
+                    "show"
+                );
+
+                document.body.classList.add(
+                    "profile-modal-open"
+                );
+
+            }
+
+            // Load fresh data from MongoDB
+            await loadEmployerProfile();
+
+        }
+    );
+
+}
+
+
+// ==============================
+// CLOSE PROFILE MODAL
+// ==============================
+
+function closeEmployerProfile() {
+
+    if (profileModal) {
+
+        profileModal.classList.remove(
+            "show"
+        );
+
+    }
+
+    document.body.classList.remove(
+        "profile-modal-open"
+    );
+
+}
+
+
+// Close button
+
+if (closeProfileModal) {
+
+    closeProfileModal.addEventListener(
+        "click",
+        closeEmployerProfile
+    );
+
+}
+
+
+// Close when clicking outside
+
+if (profileModalOverlay) {
+
+    profileModalOverlay.addEventListener(
+        "click",
+        closeEmployerProfile
+    );
+
+}
+
+
+// Close with Escape key
+
+document.addEventListener(
+    "keydown",
+    function (event) {
+
+        if (
+            event.key === "Escape" &&
+            profileModal &&
+            profileModal.classList.contains("show")
+        ) {
+
+            closeEmployerProfile();
+
+        }
+
+    }
+);
+
+
+// ==============================
+// OPEN EDIT PROFILE
+// ==============================
+
+if (editProfileBtn) {
+
+    editProfileBtn.addEventListener(
+        "click",
+        function () {
+
+            editProfileName.value =
+                loggedInUser.name || "";
+
+            editProfileEmail.value =
+                loggedInUser.email || "";
+
+            editProfilePhone.value =
+                loggedInUser.phone || "";
+
+            editProfileLocation.value =
+                loggedInUser.location || "";
+
+            editCompanyName.value =
+                loggedInUser.company || "";
+
+            editAbout.value =
+                loggedInUser.about || "";
+
+
+            editProfileForm.style.display =
+                "block";
+
+            editProfileBtn.style.display =
+                "none";
+
+
+            editProfileForm.scrollIntoView({
+                behavior: "smooth",
+                block: "nearest"
+            });
+
+        }
+    );
+
+}
+
+
+// ==============================
+// CANCEL EDIT
+// ==============================
+
+if (cancelEditProfile) {
+
+    cancelEditProfile.addEventListener(
+        "click",
+        function () {
+
+            editProfileForm.style.display =
+                "none";
+
+            editProfileBtn.style.display =
+                "inline-block";
+
+        }
+    );
+
+}
+
+
+// ==============================
+// SAVE PROFILE TO SERVER
+// ==============================
+
+if (editProfileForm) {
+
+    editProfileForm.addEventListener(
+        "submit",
+        async function (event) {
+
+            event.preventDefault();
+
+
+            const updatedName =
+                editProfileName.value.trim();
+
+            const updatedEmail =
+                editProfileEmail.value.trim();
+
+            const updatedPhone =
+                editProfilePhone.value.trim();
+
+            const updatedLocation =
+                editProfileLocation.value.trim();
+
+            const updatedCompany =
+                editCompanyName.value.trim();
+
+            const updatedAbout =
+                editAbout.value.trim();
+
+
+            // Required fields
+
+            if (
+                !updatedName ||
+                !updatedEmail
+            ) {
+
+                alert(
+                    "Name and email are required."
+                );
+
+                return;
+
+            }
+
+
+            // Disable button while saving
+
+            const saveProfileBtn =
+                document.getElementById(
+                    "saveProfileBtn"
+                );
+
+            if (saveProfileBtn) {
+
+                saveProfileBtn.disabled =
+                    true;
+
+                saveProfileBtn.textContent =
+                    "Saving...";
+
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        `https://job-portal-1-5gno.onrender.com/api/auth/profile/${loggedInUser.id}`,
+                        {
+                            method: "PUT",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body: JSON.stringify({
+
+                                name:
+                                    updatedName,
+
+                                phone:
+                                    updatedPhone,
+
+                                location:
+                                    updatedLocation,
+
+                                company:
+                                    updatedCompany,
+
+                                about:
+                                    updatedAbout
+
+                            })
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.message ||
+                        "Profile update failed"
+                    );
+
+                }
+
+
+                // ==============================
+                // UPDATE LOCAL STORAGE
+                // ==============================
+
+                const updatedUser =
+                    data.user;
+
+                Object.assign(
+                    loggedInUser,
+                    {
+                        id:
+                            updatedUser._id ||
+                            updatedUser.id,
+
+                        name:
+                            updatedUser.name,
+
+                        email:
+                            updatedUser.email,
+
+                        role:
+                            updatedUser.role,
+
+                        phone:
+                            updatedUser.phone ||
+                            "",
+
+                        location:
+                            updatedUser.location ||
+                            "",
+
+                        company:
+                            updatedUser.company ||
+                            "",
+
+                        about:
+                            updatedUser.about ||
+                            "",
+
+                        education:
+                            updatedUser.education ||
+                            "",
+
+                        skills:
+                            updatedUser.skills ||
+                            [],
+
+                        experience:
+                            updatedUser.experience ||
+                            "",
+
+                        profilePhoto:
+                            updatedUser.profilePhoto ||
+                            ""
+                    }
+                );
+
+
+                localStorage.setItem(
+                    "loggedInUser",
+                    JSON.stringify(
+                        loggedInUser
+                    )
+                );
+
+
+                // ==============================
+                // UPDATE SCREEN
+                // ==============================
+
+                if (loggedInUserName) {
+
+                    loggedInUserName.textContent =
+                        loggedInUser.name;
+
+                }
+
+                if (welcomeName) {
+
+                    welcomeName.textContent =
+                        loggedInUser.name;
+
+                }
+
+
+                // Reload profile from server
+
+                await loadEmployerProfile();
+
+
+                // Close edit form
+
+                editProfileForm.style.display =
+                    "none";
+
+                editProfileBtn.style.display =
+                    "inline-block";
+
+
+                alert(
+                    "Profile updated successfully! 🎉"
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "SAVE PROFILE ERROR:",
+                    error
+                );
+
+                alert(
+                    "Unable to save profile. Please try again."
+                );
+
+
+            } finally {
+
+                if (saveProfileBtn) {
+
+                    saveProfileBtn.disabled =
+                        false;
+
+                    saveProfileBtn.textContent =
+                        "Save Profile";
+
+                }
+
+            }
+
+        }
+    );
 
 }
