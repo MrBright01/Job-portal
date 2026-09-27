@@ -443,8 +443,6 @@ async function loadEmployerJobs() {
     }
 
 }
-
-
 // ==============================
 // POST JOB
 // ==============================
@@ -1232,3 +1230,412 @@ if (markAllRead) {
 
 
 }
+// ==============================
+// EMPLOYER PROFILE
+// ==============================
+
+const userButton =
+    document.getElementById("userButton");
+
+const userDropdown =
+    document.getElementById("userDropdown");
+
+const profileBtn =
+    document.getElementById("profileBtn");
+
+const editProfileBtn =
+    document.getElementById("editProfileBtn");
+
+const editProfileForm =
+    document.getElementById("editProfileForm");
+
+const cancelEditProfile =
+    document.getElementById("cancelEditProfile");
+
+
+// ==============================
+// PROFILE ELEMENTS
+// ==============================
+
+const profileName =
+    document.getElementById("profileName");
+
+const profileFullName =
+    document.getElementById("profileFullName");
+
+const profileEmail =
+    document.getElementById("profileEmail");
+
+const profilePhone =
+    document.getElementById("profilePhone");
+
+const profileLocation =
+    document.getElementById("profileLocation");
+
+const profileCompany =
+    document.getElementById("profileCompany");
+
+const profileAbout =
+    document.getElementById("profileAbout");
+
+
+// ==============================
+// EDIT FORM ELEMENTS
+// ==============================
+
+const editProfileName =
+    document.getElementById("editProfileName");
+
+const editProfileEmail =
+    document.getElementById("editProfileEmail");
+
+const editProfilePhone =
+    document.getElementById("editProfilePhone");
+
+const editProfileLocation =
+    document.getElementById("editProfileLocation");
+
+const editCompanyName =
+    document.getElementById("editCompanyName");
+
+const editAbout =
+    document.getElementById("editAbout");
+
+
+// ==============================
+// SHOW PROFILE DATA
+// ==============================
+
+function loadEmployerProfile() {
+
+    if (!loggedInUser) {
+        return;
+    }
+
+
+    profileName.textContent =
+        loggedInUser.name || "Employer";
+
+
+    profileFullName.textContent =
+        loggedInUser.name || "Not provided";
+
+
+    profileEmail.textContent =
+        loggedInUser.email || "Not provided";
+
+
+    profilePhone.textContent =
+        loggedInUser.phone ||
+        loggedInUser.profile?.phone ||
+        "Not provided";
+
+
+    profileLocation.textContent =
+        loggedInUser.location ||
+        loggedInUser.profile?.location ||
+        "Not provided";
+
+
+    profileCompany.textContent =
+        loggedInUser.company ||
+        loggedInUser.companyName ||
+        loggedInUser.profile?.company ||
+        "Not provided";
+
+
+    profileAbout.textContent =
+        loggedInUser.about ||
+        loggedInUser.profile?.about ||
+        "No information added yet.";
+
+}
+
+
+// ==============================
+// OPEN USER DROPDOWN
+// ==============================
+
+if (userButton && userDropdown) {
+
+    userButton.addEventListener(
+        "click",
+        function (event) {
+
+            event.stopPropagation();
+
+            userDropdown.classList.toggle("show");
+
+        }
+    );
+
+}
+
+
+// ==============================
+// CLOSE USER DROPDOWN
+// ==============================
+
+document.addEventListener(
+    "click",
+    function (event) {
+
+        if (
+            userDropdown &&
+            userButton &&
+            !userDropdown.contains(event.target) &&
+            !userButton.contains(event.target)
+        ) {
+
+            userDropdown.classList.remove("show");
+
+        }
+
+    }
+);
+
+
+// ==============================
+// OPEN MY PROFILE
+// ==============================
+
+if (profileBtn) {
+
+    profileBtn.addEventListener(
+        "click",
+        function () {
+
+            if (userDropdown) {
+                userDropdown.classList.remove("show");
+            }
+
+
+            const profileSection =
+                document.getElementById(
+                    "employerProfile"
+                );
+
+
+            if (profileSection) {
+
+                profileSection.scrollIntoView({
+                    behavior: "smooth"
+                });
+
+            }
+
+
+            loadEmployerProfile();
+
+        }
+    );
+
+}
+
+
+// ==============================
+// OPEN EDIT PROFILE
+// ==============================
+
+if (editProfileBtn) {
+
+    editProfileBtn.addEventListener(
+        "click",
+        function () {
+
+            editProfileName.value =
+                loggedInUser.name || "";
+
+            editProfileEmail.value =
+                loggedInUser.email || "";
+
+            editProfilePhone.value =
+                loggedInUser.phone ||
+                loggedInUser.profile?.phone ||
+                "";
+
+            editProfileLocation.value =
+                loggedInUser.location ||
+                loggedInUser.profile?.location ||
+                "";
+
+            editCompanyName.value =
+                loggedInUser.company ||
+                loggedInUser.companyName ||
+                loggedInUser.profile?.company ||
+                "";
+
+            editAbout.value =
+                loggedInUser.about ||
+                loggedInUser.profile?.about ||
+                "";
+
+
+            editProfileForm.style.display =
+                "block";
+
+
+            editProfileBtn.style.display =
+                "none";
+
+
+            editProfileForm.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+        }
+    );
+
+}
+
+
+// ==============================
+// CANCEL EDIT
+// ==============================
+
+if (cancelEditProfile) {
+
+    cancelEditProfile.addEventListener(
+        "click",
+        function () {
+
+            editProfileForm.style.display =
+                "none";
+
+
+            editProfileBtn.style.display =
+                "inline-block";
+
+        }
+    );
+
+}
+
+
+// ==============================
+// SAVE PROFILE
+// ==============================
+
+if (editProfileForm) {
+
+    editProfileForm.addEventListener(
+        "submit",
+        function (event) {
+
+            event.preventDefault();
+
+
+            const updatedName =
+                editProfileName.value.trim();
+
+            const updatedEmail =
+                editProfileEmail.value.trim();
+
+            const updatedPhone =
+                editProfilePhone.value.trim();
+
+            const updatedLocation =
+                editProfileLocation.value.trim();
+
+            const updatedCompany =
+                editCompanyName.value.trim();
+
+            const updatedAbout =
+                editAbout.value.trim();
+
+
+            if (!updatedName || !updatedEmail) {
+
+                alert(
+                    "Name and email are required."
+                );
+
+                return;
+
+            }
+
+
+            // ==============================
+            // UPDATE LOCAL USER
+            // ==============================
+
+            loggedInUser.name =
+                updatedName;
+
+            loggedInUser.email =
+                updatedEmail;
+
+            loggedInUser.phone =
+                updatedPhone;
+
+            loggedInUser.location =
+                updatedLocation;
+
+            loggedInUser.company =
+                updatedCompany;
+
+            loggedInUser.about =
+                updatedAbout;
+
+
+            // Save locally
+
+            localStorage.setItem(
+                "loggedInUser",
+                JSON.stringify(
+                    loggedInUser
+                )
+            );
+
+
+            // Update navbar
+
+            if (loggedInUserName) {
+
+                loggedInUserName.textContent =
+                    updatedName;
+
+            }
+
+
+            // Update welcome message
+
+            if (welcomeName) {
+
+                welcomeName.textContent =
+                    updatedName;
+
+            }
+
+
+            // Update profile
+
+            loadEmployerProfile();
+
+
+            // Close edit form
+
+            editProfileForm.style.display =
+                "none";
+
+
+            editProfileBtn.style.display =
+                "inline-block";
+
+
+            alert(
+                "Profile updated successfully! 🎉"
+            );
+
+        }
+    );
+
+}
+
+
+// ==============================
+// INITIAL PROFILE LOAD
+// ==============================
+
+loadEmployerProfile();

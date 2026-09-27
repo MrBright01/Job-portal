@@ -84,34 +84,77 @@
 
         </ul>
 
+<!-- =========================
+     EMPLOYER USER MENU
+========================== -->
 
-        <!-- USER MENU -->
+<div class="user-menu" id="userMenu">
 
-        <div
-            class="user-menu"
-            id="userMenu"
+    <button
+        class="user-button"
+        id="userButton"
+        type="button"
+    >
+        👤
+        <span id="loggedInUserName"></span>
+        <span class="user-arrow">▼</span>
+    </button>
+
+
+    <!-- USER DROPDOWN -->
+
+    <div
+        class="user-dropdown"
+        id="userDropdown"
+    >
+
+        <button
+            type="button"
+            id="profileBtn"
+            class="dropdown-item"
         >
+            👤 My Profile
+        </button>
 
-            <button
-                class="user-button"
-                id="userButton"
+
+        <button
+            type="button"
+            id="notificationsBtn"
+            class="dropdown-item"
+        >
+            🔔 Notifications
+            <span
+                id="notificationBadge"
+                class="notification-badge"
             >
-
-                👤
-                <span id="loggedInUserName">
-                </span>
-
-            </button>
+                0
+            </span>
+        </button>
 
 
-            <button
-                class="logout-button"
-                id="logoutBtn"
-            >
-                Logout
-            </button>
+        <button
+            type="button"
+            id="settingsBtn"
+            class="dropdown-item"
+        >
+            ⚙️ Settings
+        </button>
 
-        </div>
+
+        <div class="dropdown-divider"></div>
+
+
+        <button
+            type="button"
+            id="logoutBtn"
+            class="dropdown-item logout-item"
+        >
+            🚪 Logout
+        </button>
+
+    </div>
+
+</div>
 
     </nav>
 
@@ -469,7 +512,275 @@
     </div>
 
 </section>
+<!-- ==============================
+     EMPLOYER PROFILE
+============================== -->
 
+<section
+    id="employerProfile"
+    class="employer-profile"
+>
+
+    <div class="profile-card">
+
+        <!-- PROFILE HEADER -->
+
+        <div class="profile-top">
+
+            <div class="profile-avatar">
+                👤
+            </div>
+
+            <div class="profile-heading">
+
+                <h2 id="profileName">
+                    Employer
+                </h2>
+
+                <p>
+                    Employer Account
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- PROFILE INFORMATION -->
+
+        <div class="profile-info">
+
+            <div class="profile-item">
+
+                <span class="profile-label">
+                    Full Name
+                </span>
+
+                <strong id="profileFullName">
+                    -
+                </strong>
+
+            </div>
+
+
+            <div class="profile-item">
+
+                <span class="profile-label">
+                    Email
+                </span>
+
+                <strong id="profileEmail">
+                    -
+                </strong>
+
+            </div>
+
+
+            <div class="profile-item">
+
+                <span class="profile-label">
+                    Phone
+                </span>
+
+                <strong id="profilePhone">
+                    Not provided
+                </strong>
+
+            </div>
+
+
+            <div class="profile-item">
+
+                <span class="profile-label">
+                    Location
+                </span>
+
+                <strong id="profileLocation">
+                    Not provided
+                </strong>
+
+            </div>
+
+
+            <div class="profile-item">
+
+                <span class="profile-label">
+                    Company
+                </span>
+
+                <strong id="profileCompany">
+                    Not provided
+                </strong>
+
+            </div>
+
+
+            <div class="profile-item profile-about">
+
+                <span class="profile-label">
+                    About
+                </span>
+
+                <p id="profileAbout">
+                    No information added yet.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- EDIT PROFILE -->
+
+        <div class="profile-actions">
+
+            <button
+                type="button"
+                id="editProfileBtn"
+                class="primary-btn"
+            >
+                ✏️ Edit Profile
+            </button>
+
+        </div>
+
+
+        <!-- EDIT FORM -->
+
+        <form
+            id="editProfileForm"
+            class="edit-profile-form"
+            style="display: none;"
+        >
+
+            <h3>
+                Edit Your Profile
+            </h3>
+
+
+            <div class="form-row">
+
+                <div class="form-group">
+
+                    <label>
+                        Full Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="editProfileName"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Email
+                    </label>
+
+                    <input
+                        type="email"
+                        id="editProfileEmail"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="form-row">
+
+                <div class="form-group">
+
+                    <label>
+                        Phone
+                    </label>
+
+                    <input
+                        type="text"
+                        id="editProfilePhone"
+                        placeholder="Enter phone number"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Location
+                    </label>
+
+                    <input
+                        type="text"
+                        id="editProfileLocation"
+                        placeholder="Indore, India"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Company Name
+                </label>
+
+                <input
+                    type="text"
+                    id="editCompanyName"
+                    placeholder="Your company"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    About
+                </label>
+
+                <textarea
+                    id="editAbout"
+                    rows="5"
+                    placeholder="Tell candidates about yourself or your company..."
+                ></textarea>
+
+            </div>
+
+
+            <div class="form-actions">
+
+                <button
+                    type="submit"
+                    id="saveProfileBtn"
+                    class="primary-btn"
+                >
+                    Save Profile
+                </button>
+
+                <button
+                    type="button"
+                    id="cancelEditProfile"
+                    class="secondary-btn"
+                >
+                    Cancel
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</section>
     </main>
     
 
