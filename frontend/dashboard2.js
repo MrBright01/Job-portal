@@ -165,7 +165,6 @@ if (cancelPostJob) {
 // ==============================
 // LOAD EMPLOYER JOBS
 // ==============================
-
 async function loadEmployerJobs() {
 
     employerJobsContainer.innerHTML =
@@ -243,12 +242,17 @@ async function loadEmployerJobs() {
             employerJobs.length;
 
 
+        const activeJobCount =
+            employerJobs.filter(function (job) {
+
+                return job.status !== "Closed";
+
+            }).length;
+
+
         activeJobs.textContent =
-            employerJobs.length;
+            activeJobCount;
 
-
-        // Applications will be
-        // connected in the next step.
 
         totalApplications.textContent =
             "0";
@@ -307,6 +311,36 @@ async function loadEmployerJobs() {
 
 
             // ==============================
+            // JOB STATUS
+            // ==============================
+
+            const jobStatus =
+                job.status || "Active";
+
+
+            const isClosed =
+                jobStatus === "Closed";
+
+
+            const statusClass =
+                isClosed
+                    ? "job-status-closed"
+                    : "job-status-active";
+
+
+            const statusIcon =
+                isClosed
+                    ? "🔴"
+                    : "🟢";
+
+
+            const toggleButtonText =
+                isClosed
+                    ? "▶️ Reopen Job"
+                    : "⏸️ Close Job";
+
+
+            // ==============================
             // JOB CARD
             // ==============================
 
@@ -338,7 +372,35 @@ async function loadEmployerJobs() {
                     🛠️ ${skillsText}
                 </p>
 
+
+                <span
+                    class="job-status-badge ${statusClass}"
+                >
+                    ${statusIcon}
+                    ${jobStatus}
+                </span>
+
+
                 <div class="job-actions">
+
+                    <button
+                        class="secondary-btn edit-job-btn"
+                        data-id="${job._id}"
+                        type="button"
+                    >
+                        ✏️ Edit Job
+                    </button>
+
+
+                    <button
+                        class="secondary-btn toggle-job-btn"
+                        data-id="${job._id}"
+                        data-status="${jobStatus}"
+                        type="button"
+                    >
+                        ${toggleButtonText}
+                    </button>
+
 
                     <button
                         class="secondary-btn applicants-job-btn"
@@ -348,12 +410,13 @@ async function loadEmployerJobs() {
                         👥 View Applicants
                     </button>
 
+
                     <button
                         class="secondary-btn delete-job-btn"
                         data-id="${job._id}"
                         type="button"
                     >
-                        Delete
+                        🗑️ Delete
                     </button>
 
                 </div>
@@ -369,11 +432,106 @@ async function loadEmployerJobs() {
 
 
         // ==============================
+        // EDIT BUTTONS
+        // ==============================
+
+        const editButtons =
+            employerJobsContainer.querySelectorAll(
+                ".edit-job-btn"
+            );
+
+
+        editButtons.forEach(function (button) {
+
+            button.addEventListener(
+                "click",
+                function () {
+
+                    const jobId =
+                        button.dataset.id;
+
+
+                    const selectedJob =
+                        employerJobs.find(
+                            function (job) {
+
+                                return (
+                                    String(job._id) ===
+                                    String(jobId)
+                                );
+
+                            }
+                        );
+
+
+                    if (!selectedJob) {
+
+                        alert(
+                            "Job details could not be found."
+                        );
+
+                        return;
+
+                    }
+
+
+                    openEditJobModal(
+                        selectedJob
+                    );
+
+                }
+            );
+
+        });
+
+
+        // ==============================
+        // CLOSE / REOPEN BUTTONS
+        // ==============================
+
+        const toggleButtons =
+            employerJobsContainer.querySelectorAll(
+                ".toggle-job-btn"
+            );
+
+
+        toggleButtons.forEach(function (button) {
+
+            button.addEventListener(
+                "click",
+                function () {
+
+                    const jobId =
+                        button.dataset.id;
+
+
+                    const currentStatus =
+                        button.dataset.status;
+
+
+                    const newStatus =
+                        currentStatus === "Closed"
+                            ? "Active"
+                            : "Closed";
+
+
+                    updateJobStatus(
+                        jobId,
+                        newStatus
+                    );
+
+                }
+            );
+
+        });
+
+
+        // ==============================
         // DELETE BUTTONS
         // ==============================
 
         const deleteButtons =
-            document.querySelectorAll(
+            employerJobsContainer.querySelectorAll(
                 ".delete-job-btn"
             );
 
@@ -387,7 +545,10 @@ async function loadEmployerJobs() {
                     const jobId =
                         button.dataset.id;
 
-                    deleteJob(jobId);
+
+                    deleteJob(
+                        jobId
+                    );
 
                 }
             );
@@ -400,7 +561,7 @@ async function loadEmployerJobs() {
         // ==============================
 
         const applicantButtons =
-            document.querySelectorAll(
+            employerJobsContainer.querySelectorAll(
                 ".applicants-job-btn"
             );
 
@@ -413,6 +574,7 @@ async function loadEmployerJobs() {
 
                     const jobId =
                         button.dataset.id;
+
 
                     openApplicants(
                         jobId
@@ -438,7 +600,419 @@ async function loadEmployerJobs() {
                 Unable to load jobs.
             </p>
         `;
-        // =========================================
+
+    }
+
+}
+// ==============================
+// EDIT JOB MODAL
+// ==============================
+
+const editJobModal =
+    document.getElementById(
+        "editJobModal"
+    );
+
+const editJobOverlay =
+    document.getElementById(
+        "editJobOverlay"
+    );
+
+const closeEditJobModalBtn =
+    document.getElementById(
+        "closeEditJobModal"
+    );
+
+const cancelEditJob =
+    document.getElementById(
+        "cancelEditJob"
+    );
+
+const editJobForm =
+    document.getElementById(
+        "editJobForm"
+    );
+
+
+// ==============================
+// CURRENT EDITING JOB
+// ==============================
+
+let editingJobId = null;
+
+
+// ==============================
+// OPEN EDIT MODAL
+// ==============================
+
+function openEditJobModal(job) {
+
+    if (!editJobModal) {
+        return;
+    }
+
+
+    editingJobId =
+        job._id;
+
+
+    document.getElementById(
+        "editJobTitle"
+    ).value =
+        job.title || "";
+
+
+    document.getElementById(
+        "editJobCompany"
+    ).value =
+        job.company || "";
+
+
+    document.getElementById(
+        "editJobCategory"
+    ).value =
+        job.category || "Other";
+
+
+    document.getElementById(
+        "editJobType"
+    ).value =
+        job.jobType || "Full Time";
+
+
+    document.getElementById(
+        "editJobLocation"
+    ).value =
+        job.location || "";
+
+
+    document.getElementById(
+        "editJobSalary"
+    ).value =
+        job.salary || "";
+
+
+    document.getElementById(
+        "editJobSkills"
+    ).value =
+        Array.isArray(job.skills)
+            ? job.skills.join(", ")
+            : (job.skills || "");
+
+
+    document.getElementById(
+        "editJobDescription"
+    ).value =
+        job.description || "";
+
+
+    editJobModal.classList.add(
+        "show"
+    );
+
+
+    document.body.classList.add(
+        "edit-job-modal-open"
+    );
+
+}
+
+
+// ==============================
+// CLOSE EDIT MODAL
+// ==============================
+
+function closeEditJobModal() {
+
+    if (!editJobModal) {
+        return;
+    }
+
+
+    editJobModal.classList.remove(
+        "show"
+    );
+
+
+    document.body.classList.remove(
+        "edit-job-modal-open"
+    );
+
+
+    editingJobId = null;
+
+
+    if (editJobForm) {
+        editJobForm.reset();
+    }
+
+}
+
+
+if (closeEditJobModalBtn) {
+
+    closeEditJobModalBtn.addEventListener(
+        "click",
+        closeEditJobModal
+    );
+
+}
+
+
+if (cancelEditJob) {
+
+    cancelEditJob.addEventListener(
+        "click",
+        closeEditJobModal
+    );
+
+}
+
+
+if (editJobOverlay) {
+
+    editJobOverlay.addEventListener(
+        "click",
+        closeEditJobModal
+    );
+
+}
+
+
+// ==============================
+// SAVE EDITED JOB
+// ==============================
+
+if (editJobForm) {
+
+    editJobForm.addEventListener(
+        "submit",
+        async function (event) {
+
+            event.preventDefault();
+
+
+            if (!editingJobId) {
+
+                alert(
+                    "Job ID is missing."
+                );
+
+                return;
+
+            }
+
+
+            const skillsInput =
+                document.getElementById(
+                    "editJobSkills"
+                ).value.trim();
+
+
+            const skills =
+                skillsInput
+                    .split(",")
+                    .map(function (skill) {
+
+                        return skill.trim();
+
+                    })
+                    .filter(function (skill) {
+
+                        return skill !== "";
+
+                    });
+
+
+            const updatedJobData = {
+
+                title:
+                    document.getElementById(
+                        "editJobTitle"
+                    ).value.trim(),
+
+                company:
+                    document.getElementById(
+                        "editJobCompany"
+                    ).value.trim(),
+
+                location:
+                    document.getElementById(
+                        "editJobLocation"
+                    ).value.trim(),
+
+                salary:
+                    document.getElementById(
+                        "editJobSalary"
+                    ).value.trim(),
+
+                description:
+                    document.getElementById(
+                        "editJobDescription"
+                    ).value.trim(),
+
+                skills:
+                    skills,
+
+                jobType:
+                    document.getElementById(
+                        "editJobType"
+                    ).value
+
+            };
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        `https://job-portal-1-5gno.onrender.com/api/jobs/${editingJobId}`,
+                        {
+                            method: "PUT",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify(
+                                    updatedJobData
+                                )
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.message ||
+                        "Failed to update job."
+                    );
+
+                }
+
+
+                alert(
+                    "Job updated successfully! ✅"
+                );
+
+
+                closeEditJobModal();
+
+
+                loadEmployerJobs();
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Edit job error:",
+                    error
+                );
+
+
+                alert(
+                    error.message ||
+                    "Unable to update job."
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+// ==============================
+// CHANGE JOB STATUS
+// ==============================
+
+async function updateJobStatus(
+    jobId,
+    newStatus
+) {
+
+    const actionText =
+        newStatus === "Closed"
+            ? "close"
+            : "reopen";
+
+
+    const confirmed =
+        confirm(
+            `Are you sure you want to ${actionText} this job?`
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                `https://job-portal-1-5gno.onrender.com/api/jobs/${jobId}/status`,
+                {
+                    method: "PUT",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+                            status:
+                                newStatus
+                        })
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.message ||
+                "Failed to update job status."
+            );
+
+        }
+
+
+        alert(
+            `Job ${newStatus.toLowerCase()} successfully!`
+        );
+
+
+        loadEmployerJobs();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Job status error:",
+            error
+        );
+
+
+        alert(
+            error.message ||
+            "Unable to update job status."
+        );
 
     }
 

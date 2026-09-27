@@ -36,6 +36,11 @@ const jobSchema = new mongoose.Schema(
             enum: ["Full-time", "Part-time", "Internship", "Contract"],
             default: "Full-time"
         },
+        status: {
+            type: String,
+            enum: ["Active", "Closed"],
+            default: "Active"
+        },
 
         // EMPLOYER WHO POSTED THE JOB
         postedBy: {

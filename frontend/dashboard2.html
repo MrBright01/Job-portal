@@ -205,179 +205,58 @@
 
         </section>
 
+<!-- ==============================
+     EDIT JOB MODAL
+============================== -->
 
-        <!-- POST JOB -->
+<div id="editJobModal" class="edit-job-modal">
 
-        <section
-            class="post-job-section"
-            id="postJobSection"
+    <div
+        class="edit-job-overlay"
+        id="editJobOverlay"
+    ></div>
+
+    <div
+        class="edit-job-content"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="editJobTitleHeading"
+    >
+
+        <button
+            type="button"
+            id="closeEditJobModal"
+            class="edit-job-close"
+            aria-label="Close"
         >
-
-            <h2>Post a New Job</h2>
-
-            <form id="postJobForm">
-
-                <div class="form-row">
-
-                    <div class="form-group">
-
-                        <label>
-                            Job Title
-                        </label>
-
-                        <input
-                            type="text"
-                            id="jobTitle"
-                            placeholder="Frontend Developer"
-                            required
-                        >
-
-                    </div>
+            ✕
+        </button>
 
 
-                    <div class="form-group">
+        <h2 id="editJobTitleHeading">
+            ✏️ Edit Job
+        </h2>
 
-                        <label>
-                            Company
-                        </label>
-
-                        <input
-                            type="text"
-                            id="company"
-                            placeholder="Company Name"
-                            required
-                        >
-
-                    </div>
-
-                </div>
+        <p class="edit-job-subtitle">
+            Update the details of your job posting.
+        </p>
 
 
-                <div class="form-row">
+        <form id="editJobForm">
 
-                    <div class="form-group">
-
-                        <label>
-                            Category
-                        </label>
-
-                        <select id="category" required>
-
-                            <option value="">
-                                Select Category
-                            </option>
-
-                            <option value="Frontend">
-                                Frontend
-                            </option>
-
-                            <option value="Backend">
-                                Backend
-                            </option>
-
-                            <option value="Full Stack">
-                                Full Stack
-                            </option>
-
-                            <option value="Data Science">
-                                Data Science
-                            </option>
-
-                            <option value="AI/ML">
-                                AI / ML
-                            </option>
-
-                            <option value="Other">
-                                Other
-                            </option>
-
-                        </select>
-
-                    </div>
-
-
-                    <div class="form-group">
-
-                        <label>
-                            Job Type
-                        </label>
-
-                        <select id="jobType" required>
-
-                            <option value="">
-                                Select Type
-                            </option>
-
-                            <option value="Full Time">
-                                Full Time
-                            </option>
-
-                            <option value="Part Time">
-                                Part Time
-                            </option>
-
-                            <option value="Internship">
-                                Internship
-                            </option>
-
-                        </select>
-
-                    </div>
-
-                </div>
-
-
-                <div class="form-row">
-
-                    <div class="form-group">
-
-                        <label>
-                            Location
-                        </label>
-
-                        <input
-                            type="text"
-                            id="location"
-                            placeholder="Indore, India"
-                            required
-                        >
-
-                    </div>
-
-
-                    <div class="form-group">
-
-                        <label>
-                            Salary
-                        </label>
-
-                        <input
-                            type="text"
-                            id="salary"
-                            placeholder="₹5–8 LPA"
-                            required
-                        >
-
-                    </div>
-
-                </div>
-
+            <div class="form-row">
 
                 <div class="form-group">
 
                     <label>
-                        Skills
+                        Job Title
                     </label>
 
                     <input
                         type="text"
-                        id="skills"
-                        placeholder="HTML, CSS, JavaScript, React"
+                        id="editJobTitle"
+                        required
                     >
-
-                    <small>
-                        Separate skills using commas.
-                    </small>
 
                 </div>
 
@@ -385,43 +264,179 @@
                 <div class="form-group">
 
                     <label>
-                        Job Description
+                        Company
                     </label>
 
-                    <textarea
-                        id="description"
-                        rows="6"
-                        placeholder="Describe the job..."
+                    <input
+                        type="text"
+                        id="editJobCompany"
                         required
-                    ></textarea>
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="form-row">
+
+                <div class="form-group">
+
+                    <label>
+                        Category
+                    </label>
+
+                    <select id="editJobCategory" required>
+
+                        <option value="Frontend">
+                            Frontend
+                        </option>
+
+                        <option value="Backend">
+                            Backend
+                        </option>
+
+                        <option value="Full Stack">
+                            Full Stack
+                        </option>
+
+                        <option value="Data Science">
+                            Data Science
+                        </option>
+
+                        <option value="AI/ML">
+                            AI / ML
+                        </option>
+
+                        <option value="Other">
+                            Other
+                        </option>
+
+                    </select>
 
                 </div>
 
 
-                <div class="form-actions">
+                <div class="form-group">
 
-                    <button
-                        type="submit"
-                        class="primary-btn"
-                    >
-                        Post Job
-                    </button>
+                    <label>
+                        Job Type
+                    </label>
 
-                    <button
-                        type="button"
-                        id="cancelPostJob"
-                        class="secondary-btn"
-                    >
-                        Cancel
-                    </button>
+                    <select id="editJobType" required>
+
+                        <option value="Full Time">
+                            Full Time
+                        </option>
+
+                        <option value="Part Time">
+                            Part Time
+                        </option>
+
+                        <option value="Internship">
+                            Internship
+                        </option>
+
+                    </select>
 
                 </div>
 
-            </form>
+            </div>
 
-        </section>
 
-        
+            <div class="form-row">
+
+                <div class="form-group">
+
+                    <label>
+                        Location
+                    </label>
+
+                    <input
+                        type="text"
+                        id="editJobLocation"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Salary
+                    </label>
+
+                    <input
+                        type="text"
+                        id="editJobSalary"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Skills
+                </label>
+
+                <input
+                    type="text"
+                    id="editJobSkills"
+                    placeholder="HTML, CSS, JavaScript"
+                >
+
+                <small>
+                    Separate skills using commas.
+                </small>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Job Description
+                </label>
+
+                <textarea
+                    id="editJobDescription"
+                    rows="6"
+                    required
+                ></textarea>
+
+            </div>
+
+
+            <div class="form-actions">
+
+                <button
+                    type="submit"
+                    class="primary-btn"
+                    id="saveEditedJobBtn"
+                >
+                    Save Changes
+                </button>
+
+                <button
+                    type="button"
+                    class="secondary-btn"
+                    id="cancelEditJob"
+                >
+                    Cancel
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
 
 
         <!-- POSTED JOBS -->
