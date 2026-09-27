@@ -1214,3 +1214,372 @@ async function updateApplicationStatus(
         );
     }
 }
+
+// ==============================
+// NOTIFICATION UI
+// ==============================
+
+const notificationBtn =
+    document.getElementById("notificationBtn");
+
+const notificationPanel =
+    document.getElementById("notificationPanel");
+
+const markAllRead =
+    document.getElementById("markAllRead");
+
+const notificationBadge =
+    document.getElementById("notificationBadge");
+
+
+// OPEN / CLOSE NOTIFICATIONS
+
+if (notificationBtn) {
+
+    notificationBtn.addEventListener("click", function (event) {
+
+        event.stopPropagation();
+
+        notificationPanel.classList.toggle("show");
+
+    });
+
+}
+
+
+// CLOSE WHEN CLICKING OUTSIDE
+
+document.addEventListener("click", function (event) {
+
+    if (
+        notificationPanel &&
+        !notificationPanel.contains(event.target) &&
+        !notificationBtn.contains(event.target)
+    ) {
+
+        notificationPanel.classList.remove("show");
+
+    }
+
+});
+
+
+// MARK ALL AS READ
+
+if (markAllRead) {
+
+    markAllRead.addEventListener("click", function () {
+
+        const unreadNotifications =
+            document.querySelectorAll(".notification.unread");
+
+        unreadNotifications.forEach(function (notification) {
+
+            notification.classList.remove("unread");
+
+        });
+
+        notificationBadge.textContent = "0";
+
+        notificationBadge.style.display = "none";
+
+    });
+
+
+}
+
+// =========================================
+// EMPLOYER USER DROPDOWN
+// =========================================
+
+const userButton = document.getElementById("userButton");
+const userMenu = document.getElementById("userMenu");
+const userDropdown = document.getElementById("userDropdown");
+
+// =========================================
+// OPEN / CLOSE USER DROPDOWN
+// =========================================
+
+if (userButton && userDropdown && userMenu) {
+
+userButton.addEventListener("click", function (event) {
+
+    event.stopPropagation();
+
+    userDropdown.classList.toggle("show");
+
+    userMenu.classList.toggle("open");
+
+});
+
+}
+
+// =========================================
+// CLOSE DROPDOWN WHEN CLICKING OUTSIDE
+// =========================================
+
+document.addEventListener("click", function (event) {
+
+if (
+    userMenu &&
+    !userMenu.contains(event.target)
+) {
+
+    userDropdown.classList.remove("show");
+
+    userMenu.classList.remove("open");
+
+}
+
+});
+
+// =========================================
+// DROPDOWN BUTTONS
+// =========================================
+
+// MY PROFILE
+const profileBtn =
+document.getElementById("profileBtn");
+
+if (profileBtn) {
+
+profileBtn.addEventListener("click", function () {
+
+    userDropdown.classList.remove("show");
+
+    userMenu.classList.remove("open");
+
+    // Open employer profile section
+
+    const profileSection =
+        document.getElementById("employerProfile");
+
+    if (profileSection) {
+
+        profileSection.scrollIntoView({
+            behavior: "smooth"
+        });
+
+    }
+
+});
+
+}
+
+// NOTIFICATIONS
+
+const notificationsBtn =
+document.getElementById("notificationsBtn");
+
+if (notificationsBtn) {
+
+notificationsBtn.addEventListener("click", function () {
+
+    userDropdown.classList.remove("show");
+
+    userMenu.classList.remove("open");
+
+    // Notification feature will be connected later
+
+    console.log("Notifications clicked");
+
+});
+
+}
+
+// SETTINGS
+
+const settingsBtn =
+document.getElementById("settingsBtn");
+
+if (settingsBtn) {
+
+settingsBtn.addEventListener("click", function () {
+
+    userDropdown.classList.remove("show");
+
+    userMenu.classList.remove("open");
+
+    // Settings feature will be connected later
+
+    console.log("Settings clicked");
+
+});
+
+}
+// =========================================
+// EMPLOYER EDIT PROFILE
+// =========================================
+
+const editProfileBtn =
+document.getElementById("editProfileBtn");
+
+const editProfileForm =
+document.getElementById("editProfileForm");
+
+const closeEditProfile =
+document.getElementById("closeEditProfile");
+
+const cancelEditProfile =
+document.getElementById("cancelEditProfile");
+
+// =========================================
+// OPEN EDIT PROFILE
+// =========================================
+
+if (editProfileBtn) {
+
+editProfileBtn.addEventListener("click", function () {
+
+    editProfileForm.classList.add("show");
+
+    // Load current information
+
+    if (
+        typeof loggedInUser !== "undefined" &&
+        loggedInUser
+    ) {
+
+        document.getElementById("editProfileName").value =
+            loggedInUser.name || "";
+
+        document.getElementById("editProfileEmail").value =
+            loggedInUser.email || "";
+
+        document.getElementById("editProfilePhone").value =
+            loggedInUser.profile?.phone || "";
+
+        document.getElementById("editProfileLocation").value =
+            loggedInUser.profile?.location || "";
+
+        document.getElementById("editCompanyName").value =
+            loggedInUser.profile?.companyName || "";
+
+        document.getElementById("editAbout").value =
+            loggedInUser.profile?.about || "";
+
+    }
+
+    editProfileForm.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
+
+});
+
+}
+
+// =========================================
+// CLOSE EDIT PROFILE
+// =========================================
+
+function closeEmployerProfileEditor() {
+
+if (editProfileForm) {
+
+    editProfileForm.classList.remove("show");
+
+}
+
+}
+
+if (closeEditProfile) {
+
+closeEditProfile.addEventListener(
+    "click",
+    closeEmployerProfileEditor
+);
+
+}
+
+if (cancelEditProfile) {
+
+cancelEditProfile.addEventListener(
+    "click",
+    closeEmployerProfileEditor
+);
+
+}
+
+// =========================================
+// SAVE PROFILE - TEMPORARY
+// =========================================
+
+const saveProfileBtn =
+document.getElementById("saveProfileBtn");
+
+if (saveProfileBtn) {
+
+saveProfileBtn.addEventListener("click", function () {
+
+    const newName =
+        document.getElementById("editProfileName").value.trim();
+
+    if (!newName) {
+
+        alert("Please enter your name.");
+
+        return;
+
+    }
+
+
+    // Update the current local user
+
+    if (
+        typeof loggedInUser !== "undefined" &&
+        loggedInUser
+    ) {
+
+        loggedInUser.name = newName;
+
+
+        if (!loggedInUser.profile) {
+
+            loggedInUser.profile = {};
+
+        }
+
+
+        loggedInUser.profile.phone =
+            document.getElementById("editProfilePhone").value.trim();
+
+        loggedInUser.profile.location =
+            document.getElementById("editProfileLocation").value.trim();
+
+        loggedInUser.profile.companyName =
+            document.getElementById("editCompanyName").value.trim();
+
+        loggedInUser.profile.about =
+            document.getElementById("editAbout").value.trim();
+
+
+        // Save locally
+
+        localStorage.setItem(
+            "loggedInUser",
+            JSON.stringify(loggedInUser)
+        );
+
+
+        // Update profile UI
+
+        document.getElementById("profileName").textContent =
+            loggedInUser.name;
+
+        document.getElementById("profileFullName").textContent =
+            loggedInUser.name;
+
+        document.getElementById("loggedInUserName").textContent =
+            loggedInUser.name;
+
+
+        alert("Profile updated successfully!");
+
+        closeEmployerProfileEditor();
+
+    }
+
+});
+
+}
